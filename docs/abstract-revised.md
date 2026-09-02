@@ -11,7 +11,7 @@ Department of Medical Oncology and Hematology, UZH – Universität Zürich, Zur
 
 Brain metastases (BM) occur in up to 40% of patients with non-small cell lung cancer
 (NSCLC). Whether synchronous (sBM, at diagnosis) and metachronous (mBM, later) BM differ
-genomically or prognostically remains unclear. Published comparisons measure
+genomically or prognostically remains unclear. Published comparisons typically measure
 overall survival (OS) from primary diagnosis, introducing immortal time bias, as mBM
 patients must survive to develop BM.
 
@@ -29,8 +29,8 @@ rates in unselected NSCLC on comparable CGP.
 ## Results
 
 Groups were balanced for age (61.6 vs 62.8 years), sex (56.8% vs 57.1% male) and
-adenocarcinoma (78.4% vs 85.7%). Time to BM was 2 ± 9 days in sBM and 559 ± 589 in
-mBM (median 347, IQR 215–622). PD-L1 TC0 was frequent in both groups
+adenocarcinoma (78.4% vs 85.7%). Time to BM was 2 ± 9 days in sBM and 559 ± 589 days
+in mBM (median 347, IQR 215–622). PD-L1 TC0 was frequent in both groups
 (33.0% vs 35.7%); IC1 predominated in sBM (31.8%).
 
 From primary diagnosis, OS did not differ (25.0 vs 23.0 months; p=0.47). From BM diagnosis,
@@ -49,6 +49,6 @@ Anchored to BM diagnosis, the apparent advantage of mBM reverses: mBM carries an
 three-fold higher hazard, consistent with BM arising in pretreated, therapy-resistant
 disease. The shared genomic landscape suggests brain-metastatic competence is established
 at or before primary diagnosis, BM timing reflecting treatment and surveillance rather than
-a distinct metastatic genotype. 9p21.3
-co-deletion is neither enriched nor prognostic in BM, but defines a therapeutically
-addressable subgroup (MTAP loss; PRMT5/MAT2A inhibition).
+a distinct metastatic genotype. 9p21.3 co-deletion is neither enriched nor prognostic in
+BM, but defines a therapeutically addressable subgroup (MTAP loss; PRMT5/MAT2A
+inhibition).
