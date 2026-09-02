@@ -44,6 +44,11 @@ def median_st(time, event):
 def panel(ax, df, tcol, title, xmax, ticks):
     for label, sub in (('sBM', df[df.mBM == 0]), ('mBM', df[df.mBM == 1])):
         t, s = km(sub[tcol], sub.event)
+        # carry the flat tail out to the last observation, so a censoring mark
+        # beyond the final event sits on the curve instead of floating free
+        tmax = float(sub[tcol].max())
+        if tmax > t[-1]:
+            t, s = np.append(t, tmax), np.append(s, s[-1])
         ax.step(t, s, where='post', color=SERIES[label], lw=2,
                 linestyle=STYLE[label], label=f'{label} (n={len(sub)})',
                 solid_capstyle='butt')
@@ -101,10 +106,10 @@ def main():
     df['os_bm'] = (df.os - df[d] / 30.44).clip(lower=1 / 30.44)
 
     global ax_lims
-    ax_lims = (0, 72)
-    ticks = [0, 12, 24, 36, 48, 60, 72]
+    ax_lims = (0, 132)
+    ticks = [0, 24, 48, 72, 96, 120]
 
-    fig = plt.figure(figsize=(9.6, 5.2))
+    fig = plt.figure(figsize=(10.2, 5.2))
     gs = fig.add_gridspec(2, 2, height_ratios=[4.2, 1], hspace=0.30, wspace=0.30,
                           left=0.095, right=0.985, top=0.91, bottom=0.13)
 
@@ -112,7 +117,7 @@ def main():
             ('os',    'A   Overall survival from primary diagnosis'),
             ('os_bm', 'B   Overall survival from brain-metastasis diagnosis')]):
         ax = fig.add_subplot(gs[0, col])
-        panel(ax, df, tcol, title, 72, ticks)
+        panel(ax, df, tcol, title, 132, ticks)
         if col == 0:
             ax.set_ylabel('Overall survival (%)', color=INK_2, fontsize=9)
         axr = fig.add_subplot(gs[1, col], sharex=ax)

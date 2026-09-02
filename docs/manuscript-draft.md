@@ -357,7 +357,11 @@ report survival from the metastatic event, not only from primary diagnosis.
 **Figure 1.** Overall survival in synchronous and metachronous brain metastases under two
 time origins. (A) From primary lung cancer diagnosis; (B) from brain-metastasis diagnosis.
 Kaplan–Meier estimates with censoring marks and numbers at risk. The same 116 patients and
-89 deaths underlie both panels.
+89 deaths underlie both panels; the synchronous curve is near-identical between them
+because time to BM is close to zero in that group, so the entire difference arises from the
+metachronous group. Curves are shown over the full observation period (to 129 months);
+fewer than five patients per group remain at risk beyond 48 months, and no metachronous
+patient remains at risk beyond 48 months in panel B.
 → `figures/figure1_survival_both_clocks.pdf`
 
 **Figure S1.** CONSORT-style patient flow diagram. **[TO COMPLETE]**
