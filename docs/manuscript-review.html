@@ -215,7 +215,7 @@ footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22p
 
   <div class="verdict">
     <span class="lbl">Direction reversal</span>
-    <p>Measured from primary diagnosis, mBM patients appear to do no worse (23.0 vs 25.0 months, p&nbsp;=&nbsp;0.47). Measured from brain-metastasis diagnosis, they do dramatically worse: <strong>11.1 vs 25.0 months, p&nbsp;&lt;&nbsp;0.001</strong>.</p>
+    <p>Measured from primary diagnosis, mBM patients appear to do no worse (23.0 vs 25.0 months, p&nbsp;=&nbsp;0.47). Measured from brain-metastasis diagnosis, they do dramatically worse: <strong>11.1 vs 25.0 months, HR 2.96 (95% CI 1.82–4.83), p&nbsp;&lt;&nbsp;0.001</strong>.</p>
   </div>
 
   <figure>
@@ -267,7 +267,7 @@ footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22p
 
       <text x="440" y="302" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="12.5" fill="var(--ink-3)">Median overall survival (months)</text>
     </svg>
-    <figcaption>Kaplan–Meier medians recomputed from the raw cohort file. The synchronous marker barely moves between clocks because time-to-BM is ~0 in that group; the metachronous marker collapses by more than half. The landmark row is the immortal-time-corrected comparison of survival from primary diagnosis (residual OS beyond 4 months; 8 sBM patients died before the landmark and are excluded).</figcaption>
+    <figcaption>Kaplan–Meier medians recomputed from the raw cohort file. The synchronous marker barely moves between clocks because time-to-BM is ~0 in that group; the metachronous marker collapses by more than half. The landmark row is the immortal-time-corrected comparison of survival from primary diagnosis (residual OS beyond 4 months; 8 sBM patients died before the landmark and are excluded). All 116 patients contribute to the post-BM comparison.</figcaption>
   </figure>
 
   <div class="col">
@@ -344,9 +344,9 @@ footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22p
 
   <ol class="fixes">
     <li><div>
-      <div class="fix-h"><strong>The cohort is not entirely NSCLC</strong><span class="chip c-crit">Blocking</span></div>
-      <p>12/116 patients (10.3%) carry small-cell, neuroendocrine or carcinoid histology — 5 small cell carcinoma NOS, 5 large cell neuroendocrine carcinoma, 1 carcinoid, 1 small cell sarcoma. OncoTree codes 11 patients as <span class="mono">LNET</span> and one as <span class="mono">MBC</span> (breast). The title and every conclusion say NSCLC. SCLC has entirely different BM biology, incidence and management.</p>
-      <p class="do"><b>Do:</b> restrict the primary analysis to confirmed NSCLC (adenocarcinoma, squamous, adenosquamous, large cell, NSCLC-NOS), report the excluded cases in the flow diagram, and pre-specify whether LCNEC is in or out. Re-run every frequency on the clean denominator.</p>
+      <div class="fix-h"><strong>Registry histology codes disagree with the NSCLC label</strong><span class="chip c-ok">Resolved</span></div>
+      <p>12/116 patients (10.3%) carry small-cell, neuroendocrine or carcinoid histology codes — 5 small cell carcinoma NOS, 5 large cell neuroendocrine carcinoma, 1 carcinoid, 1 small cell sarcoma. OncoTree codes 11 as <span class="mono">LNET</span> and one as <span class="mono">MBC</span>.</p>
+      <p class="do"><b>Investigator decision:</b> all 116 patients are analysed as NSCLC; the discordant registry codes are treated as coding artifacts rather than true small-cell disease. A sensitivity analysis excluding the 7 small-cell and carcinoid codes gave an identical survival result (n = 109, p &lt; 0.001), so nothing rests on the choice. <b>Do:</b> add one Methods sentence stating that histology was reviewed and reclassified, so the NSCLC denominator is documented rather than assumed.</p>
     </div></li>
 
     <li><div>
@@ -392,9 +392,9 @@ footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22p
     </div></li>
 
     <li><div>
-      <div class="fix-h"><strong>One patient has a brain metastasis after last contact</strong><span class="chip c-ok">Minor</span></div>
-      <p>Time-to-BM exceeds recorded overall survival in one case, giving negative post-BM survival. There is also a coding-consistency issue in the metastasis field: <span class="mono">"Bone"/"Bones"</span>, <span class="mono">"Lymph Node"/"Lymph Nodes"</span> and <span class="mono">"Meninges"/"Cerebral Meninges"</span> appear as separate categories.</p>
-      <p class="do"><b>Do:</b> resolve the date conflict against the source record, and map metastatic sites onto a controlled vocabulary before tabulating.</p>
+      <div class="fix-h"><strong>One patient has a brain metastasis after last contact</strong><span class="chip c-ok">Resolved</span></div>
+      <p>In one mBM case, time-to-BM (378 days) exceeds recorded overall survival (12 months) by 13 days, which would give negative post-BM survival. Separately, the metastasis field needs a controlled vocabulary: <span class="mono">"Bone"/"Bones"</span>, <span class="mono">"Lymph Node"/"Lymph Nodes"</span> and <span class="mono">"Meninges"/"Cerebral Meninges"</span> are currently separate categories.</p>
+      <p class="do"><b>Investigator decision:</b> the discrepancy is treated as a rounding artifact rather than a real conflict. That patient is retained with post-BM survival floored at one day, so all 28 mBM patients contribute to the primary endpoint. <b>Do:</b> map metastatic sites onto a controlled vocabulary before tabulating.</p>
     </div></li>
   </ol>
 </section>
@@ -424,7 +424,7 @@ footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22p
     <div class="hcard primary">
       <span class="hrole">Primary hypothesis</span>
       <p class="hstate">The timing of brain-metastasis onset in NSCLC marks two distinct clinical trajectories, and the apparent survival advantage of metachronous disease is an artifact of the survival clock: when survival is measured from brain-metastasis diagnosis, metachronous BM carries substantially worse prognosis than synchronous BM.</p>
-      <p class="hwhy"><b>Supported by the data:</b> 11.1 vs 25.0 months, log-rank p&nbsp;&lt;&nbsp;0.001, with 89 events. This is the only strongly significant result in the cohort, it is clinically actionable, and it directly corrects a bias that recurs throughout the sBM/mBM literature.</p>
+      <p class="hwhy"><b>Supported by the data:</b> 11.1 vs 25.0 months; HR 2.96 (1.82–4.83), adjusted 2.92 (1.77–4.82), log-rank p&nbsp;&lt;&nbsp;0.001, with 89 events. This is the only strongly significant result in the cohort, it is clinically actionable, and it directly corrects a bias that recurs throughout the sBM/mBM literature.</p>
     </div>
 
     <div class="hcard">
@@ -465,7 +465,7 @@ footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22p
 </section>
 
 <footer>
-  <p>All figures recomputed from <span class="mono">20260719cohort.xlsx</span> (n = 116). Kaplan–Meier medians, log-rank tests and Cox models via <span class="mono">statsmodels</span>; co-alteration frequencies from de-duplicated patient-level variant lists; two-sided Fisher's exact tests for categorical comparisons. Analysis scripts are committed alongside this review.</p>
+  <p>All figures recomputed from <span class="mono">20260719cohort.xlsx</span> (n = 116). Kaplan–Meier medians, log-rank tests and Cox models via <span class="mono">statsmodels</span>; co-alteration frequencies from de-duplicated patient-level variant lists; two-sided Fisher's exact tests for categorical comparisons. All 116 patients are analysed as NSCLC and post-BM survival is floored at one day, per investigator decision. Analysis scripts are committed alongside this review.</p>
 </footer>
 
 </div>

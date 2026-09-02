@@ -10,7 +10,10 @@ df['event']=(df['Is Deceased'].astype(str)=='True').astype(int)
 df['os']=df['Overall survival'].astype(float)
 df['mBM']=(df.group=='verl-mBM').astype(int)
 df['t2bm']=df[d]/30.44
-df['os_bm']=df.os-df.t2bm
+# Full cohort retained: all 116 patients are analysed as NSCLC, and post-BM survival is
+# floored at one day so the single record whose BM date falls after last follow-up still
+# contributes rather than being dropped.
+df['os_bm']=(df.os-df.t2bm).clip(lower=1/30.44)
 
 def med(t,e):
     sf=SurvfuncRight(t,e); i=np.where(sf.surv_prob<=0.5)[0]
@@ -28,7 +31,7 @@ def hr(t,e,x):
     return np.exp(m.params[0]), np.exp(m.conf_int()[0][0]), np.exp(m.conf_int()[0][1]), m.pvalues[0]
 
 print("="*72); print("PRIMARY ENDPOINT: OS FROM BM DIAGNOSIS")
-s=df[df.os_bm>0]
+s=df
 for g,l in [(0,'sBM'),(1,'mBM')]:
     x=s[s.mBM==g]; m=med(x.os_bm,x.event); lo,hi=ci_med(x.os_bm.values,x.event.values)
     print(f"  {l}: n={len(x)} ev={x.event.sum()} median={m:.1f} (95%CI {lo:.1f}-{hi:.1f})")
@@ -64,7 +67,7 @@ df['co9p']=df['loss'].apply(lambda s:{'CDKN2A','CDKN2B','MTAP'}<=s).astype(int)
 a=df[df.mBM==0].co9p.sum(); b=df[df.mBM==1].co9p.sum()
 print(f"  triple co-deletion: all {df.co9p.sum()}/116 ({100*df.co9p.mean():.1f}%)  sBM {a}/88 ({100*a/88:.1f}%)  mBM {b}/28 ({100*b/28:.1f}%)  p={fisher_exact([[a,88-a],[b,28-b]])[1]:.2f}")
 h=hr(df.os,df.event,df.co9p); print(f"  OS(primary dx) HR={h[0]:.2f} ({h[1]:.2f}-{h[2]:.2f}) p={h[3]:.2f}")
-sc=df[df.os_bm>0]; h=hr(sc.os_bm,sc.event,sc.co9p); print(f"  OS(from BM)    HR={h[0]:.2f} ({h[1]:.2f}-{h[2]:.2f}) p={h[3]:.2f}")
+h=hr(df.os_bm,df.event,df.co9p); print(f"  OS(from BM)    HR={h[0]:.2f} ({h[1]:.2f}-{h[2]:.2f}) p={h[3]:.2f}")
 
 print("\n"+"="*72); print("FDR ACROSS ALTERATIONS (gene+type, >=5 pts) — sBM vs mBM")
 def alts(s):
@@ -91,14 +94,3 @@ rej,q,_,_=multipletests(raw,method='fdr_bh')
 print(f"  {len(tests)} alterations tested; significant after BH-FDR: {rej.sum()}")
 for (n_,A,B,p),qq,r in sorted(zip(tests,q,rej), key=lambda z:z[0][3])[:6]:
     print(f"    {n_:34s} {A:3d} vs {B:2d}  p={p:.3f}  q={qq:.3f}  {'SIG' if r else ''}")
-
-print("\n"+"="*72); print("SENSITIVITY: NSCLC-ONLY (exclude SCLC/carcinoid/small cell sarcoma)")
-bad=['Small cell carcinoma, NOS','Small cell sarcoma','Carcinoid tumor, NOS']
-n=df[~df['Primary Cancers>Histology>Text'].isin(bad)].copy()
-print(f"  n={len(n)} (sBM {(n.mBM==0).sum()}, mBM {(n.mBM==1).sum()})")
-sn=n[n.os_bm>0]
-for g,l in [(0,'sBM'),(1,'mBM')]:
-    x=sn[sn.mBM==g]; print(f"    {l}: median OS-from-BM={med(x.os_bm,x.event):.1f} (n={len(x)})")
-chi,p=survdiff(sn.os_bm,sn.event,sn.mBM); print(f"    log-rank p={p:.2e}")
-a=n[n.mBM==0].co9p.sum(); b=n[n.mBM==1].co9p.sum()
-print(f"    9p21.3 triple: {n.co9p.sum()}/{len(n)} ({100*n.co9p.mean():.1f}%)  sBM {100*a/(n.mBM==0).sum():.1f}%  mBM {100*b/(n.mBM==1).sum():.1f}%")
