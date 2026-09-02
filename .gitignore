@@ -1,0 +1,6 @@
+# Patient-level data is never committed: the cohort file contains dates of birth
+# and diagnosis dates and is re-identifiable. Keep it in a controlled location and
+# point COHORT_XLSX at it.
+data/
+*.xlsx
+*.xls

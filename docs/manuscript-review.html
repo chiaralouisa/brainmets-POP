@@ -1,0 +1,471 @@
+<title>9p21.3 Manuscript Review</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F1F4F4; --surface:#FFFFFF; --surface-2:#E8EDEC;
+  --ink:#16211F; --ink-2:#556462; --ink-3:#7C8988;
+  --rule:#D2DBD9; --rule-strong:#B4C1BF;
+  --accent:#0E5F63; --accent-soft:#DBEAEA;
+  --sbm:#0E5F63; --mbm:#96660F;
+  --crit:#A33327; --crit-soft:#F4E0DD;
+  --warn:#8B6510; --warn-soft:#F5E9D2;
+  --ok:#3C6B4A; --ok-soft:#DEEAE0;
+  --shadow:0 1px 2px rgba(22,33,31,.06),0 8px 24px -16px rgba(22,33,31,.28);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1514; --surface:#161F1E; --surface-2:#1D2827;
+    --ink:#E7EDEB; --ink-2:#9DACA9; --ink-3:#7A8886;
+    --rule:#2A3533; --rule-strong:#3C4A48;
+    --accent:#57BCBF; --accent-soft:#12302F;
+    --sbm:#57BCBF; --mbm:#D9A33E;
+    --crit:#E4877A; --crit-soft:#331D1A;
+    --warn:#D6A63F; --warn-soft:#302514;
+    --ok:#84BE92; --ok-soft:#172A1D;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1514; --surface:#161F1E; --surface-2:#1D2827;
+  --ink:#E7EDEB; --ink-2:#9DACA9; --ink-3:#7A8886;
+  --rule:#2A3533; --rule-strong:#3C4A48;
+  --accent:#57BCBF; --accent-soft:#12302F;
+  --sbm:#57BCBF; --mbm:#D9A33E;
+  --crit:#E4877A; --crit-soft:#331D1A;
+  --warn:#D6A63F; --warn-soft:#302514;
+  --ok:#84BE92; --ok-soft:#172A1D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16.5px; line-height:1.62; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1040px; margin:0 auto; padding:0 28px 96px}
+.col{max-width:640px}
+h1,h2,h3{font-family:Spectral,Georgia,serif; text-wrap:balance; margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.gene{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.9em; font-weight:500; letter-spacing:-.01em}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+header{border-bottom:1px solid var(--rule-strong); padding:56px 0 30px; margin-bottom:44px}
+.eyebrow{
+  font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 18px
+}
+h1{font-size:clamp(34px,5.4vw,52px); line-height:1.08; font-weight:600; letter-spacing:-.015em}
+h1 em{font-style:italic; color:var(--ink-2); font-weight:400}
+.standfirst{font-size:19px; color:var(--ink-2); margin:20px 0 0; max-width:620px; line-height:1.55}
+.meta{
+  display:flex; flex-wrap:wrap; gap:0 30px; margin-top:28px;
+  font-size:12.5px; color:var(--ink-3);
+  font-family:"IBM Plex Mono",monospace;
+}
+.meta b{color:var(--ink-2); font-weight:500}
+
+/* ---------- sections ---------- */
+section{margin:0 0 68px}
+.sechead{display:flex; align-items:baseline; gap:14px; margin-bottom:8px}
+.secnum{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600;
+  color:var(--accent); letter-spacing:.06em; flex:none; padding-top:5px
+}
+h2{font-size:clamp(24px,3.2vw,31px); font-weight:600; letter-spacing:-.01em; line-height:1.2}
+.dek{color:var(--ink-2); font-size:17px; margin:6px 0 26px; max-width:620px}
+p{margin:0 0 18px}
+.col p:last-child{margin-bottom:0}
+h3{font-size:18px; font-weight:600; margin:32px 0 10px; letter-spacing:-.005em}
+
+/* ---------- verdict banner ---------- */
+.verdict{
+  background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--crit); border-radius:2px;
+  padding:22px 26px; margin:0 0 34px; box-shadow:var(--shadow);
+}
+.verdict .lbl{
+  font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--crit); display:block; margin-bottom:7px
+}
+.verdict p{font-family:Spectral,Georgia,serif; font-size:20px; line-height:1.45; margin:0}
+
+/* ---------- chart ---------- */
+figure{margin:34px 0 0; background:var(--surface); border:1px solid var(--rule);
+  border-radius:2px; padding:26px 20px 18px; box-shadow:var(--shadow); overflow-x:auto}
+figure svg{display:block; min-width:640px; width:100%; height:auto}
+figcaption{font-size:13.5px; color:var(--ink-3); margin-top:14px; padding:0 6px; line-height:1.5;
+  border-top:1px solid var(--rule); padding-top:12px}
+
+/* ---------- ledger table ---------- */
+.tblwrap{overflow-x:auto; margin:28px 0 0; border:1px solid var(--rule);
+  border-radius:2px; background:var(--surface); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; min-width:720px; font-size:14.5px}
+th{
+  text-align:left; font-family:"Source Sans 3",sans-serif;
+  font-size:10.5px; font-weight:700; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-3); padding:14px 16px; border-bottom:1px solid var(--rule-strong);
+  background:var(--surface-2); white-space:nowrap;
+}
+td{padding:13px 16px; border-bottom:1px solid var(--rule); vertical-align:top; line-height:1.45}
+tr:last-child td{border-bottom:none}
+td.claim{color:var(--ink-2)}
+td.actual{font-weight:600}
+.what{font-weight:600; width:23%}
+.what small{display:block; font-weight:400; color:var(--ink-3); font-size:12.5px; margin-top:2px}
+
+/* ---------- chips ---------- */
+.chip{
+  display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; padding:3px 8px; border-radius:2px; white-space:nowrap;
+  font-family:"Source Sans 3",sans-serif;
+}
+.c-crit{background:var(--crit-soft); color:var(--crit)}
+.c-warn{background:var(--warn-soft); color:var(--warn)}
+.c-ok{background:var(--ok-soft); color:var(--ok)}
+
+/* ---------- fix list ---------- */
+.fixes{list-style:none; padding:0; margin:26px 0 0; counter-reset:fix;
+  display:flex; flex-direction:column; gap:2px}
+.fixes li{
+  counter-increment:fix; display:grid; grid-template-columns:44px 1fr; gap:0 18px;
+  padding:20px 0; border-top:1px solid var(--rule);
+}
+.fixes li::before{
+  content:counter(fix,decimal-leading-zero);
+  font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+  color:var(--ink-3); padding-top:2px;
+}
+.fix-h{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:5px}
+.fix-h strong{font-size:16.5px; font-weight:600}
+.fixes p{margin:0; color:var(--ink-2); font-size:15.5px; line-height:1.55}
+.fixes p + p{margin-top:8px}
+.fixes .do{color:var(--ink); }
+.fixes .do b{font-weight:600}
+
+/* ---------- hypothesis cards ---------- */
+.hyp{display:flex; flex-direction:column; gap:16px; margin-top:26px}
+.hcard{
+  background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+  padding:24px 26px; box-shadow:var(--shadow);
+}
+.hcard.primary{border-top:3px solid var(--accent)}
+.hrole{
+  font-size:10.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:10px;
+}
+.hcard.primary .hrole{color:var(--accent)}
+.hstate{font-family:Spectral,Georgia,serif; font-size:19.5px; line-height:1.45; margin:0 0 16px}
+.hcard.primary .hstate{font-size:21px}
+.hwhy{font-size:14.5px; color:var(--ink-2); margin:0; padding-top:14px; border-top:1px solid var(--rule)}
+.hwhy b{color:var(--ink); font-weight:600}
+
+/* ---------- requirement list ---------- */
+.reqs{list-style:none; padding:0; margin:24px 0 0; display:flex; flex-direction:column; gap:0}
+.reqs li{display:grid; grid-template-columns:18px 1fr; gap:14px; padding:14px 0;
+  border-bottom:1px solid var(--rule); font-size:15.5px; line-height:1.5}
+.reqs li:last-child{border-bottom:none}
+.reqs li::before{
+  content:""; width:9px; height:9px; margin-top:8px; border-radius:1px;
+  background:var(--accent-soft); border:1.5px solid var(--accent);
+}
+.reqs b{font-weight:600}
+.reqs span{color:var(--ink-2)}
+
+.note{
+  background:var(--surface-2); border-radius:2px; padding:18px 22px; margin:28px 0 0;
+  font-size:14.5px; color:var(--ink-2); line-height:1.55;
+}
+.note b{color:var(--ink)}
+
+footer{border-top:1px solid var(--rule-strong); margin-top:20px; padding-top:22px;
+  font-size:13px; color:var(--ink-3); max-width:640px}
+
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+@media (max-width:620px){
+  .wrap{padding:0 20px 72px}
+  .fixes li{grid-template-columns:32px 1fr; gap:0 12px}
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Manuscript planning review · Abstract 2202</p>
+  <h1>The Survival Result <em>Runs Backwards</em></h1>
+  <p class="standfirst">A data audit of the 116-patient NSCLC brain-metastasis cohort behind ESMO Abstract 2202 — what the numbers actually show, what has to be fixed before submission, and the hypothesis the paper should be built on instead.</p>
+  <div class="meta">
+    <span><b>Source</b> 20260719cohort.xlsx</span>
+    <span><b>n</b> 116 (88 sBM / 28 mBM)</span>
+    <span><b>Events</b> 89 deaths</span>
+    <span><b>Reviewed</b> 2 Sep 2026</span>
+  </div>
+</header>
+
+<section>
+  <div class="col">
+    <div class="sechead"><span class="secnum">01</span><h2>The finding that changes the paper</h2></div>
+    <p class="dek">Overall survival in this dataset is measured from primary lung-cancer diagnosis. That clock builds in immortal time — a patient cannot be classified as metachronous without first surviving long enough to develop a brain metastasis.</p>
+  </div>
+
+  <div class="verdict">
+    <span class="lbl">Direction reversal</span>
+    <p>Measured from primary diagnosis, mBM patients appear to do no worse (23.0 vs 25.0 months, p&nbsp;=&nbsp;0.47). Measured from brain-metastasis diagnosis, they do dramatically worse: <strong>11.1 vs 25.0 months, p&nbsp;&lt;&nbsp;0.001</strong>.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 760 322" role="img" aria-label="Median overall survival for synchronous and metachronous brain metastases under three survival clocks. From primary diagnosis: sBM 25.0, mBM 23.0 months. From brain-metastasis diagnosis: sBM 25.0, mBM 11.1 months. Four-month landmark residual survival: sBM 30.0, mBM 19.0 months.">
+      <!-- legend -->
+      <circle cx="176" cy="14" r="5.5" fill="var(--sbm)"></circle>
+      <text x="188" y="18.5" font-family="'Source Sans 3',sans-serif" font-size="12.5" fill="var(--ink-2)">Synchronous BM (n = 88)</text>
+      <circle cx="352" cy="14" r="5.5" fill="var(--mbm)"></circle>
+      <text x="364" y="18.5" font-family="'Source Sans 3',sans-serif" font-size="12.5" fill="var(--ink-2)">Metachronous BM (n = 28)</text>
+
+      <!-- axis -->
+      <g font-family="'IBM Plex Mono',monospace" font-size="11" fill="var(--ink-3)" text-anchor="middle">
+        <text x="170" y="46">0</text><text x="305" y="46">8</text><text x="440" y="46">16</text><text x="575" y="46">24</text><text x="710" y="46">32</text>
+      </g>
+      <line x1="170" y1="56" x2="710" y2="56" stroke="var(--rule-strong)" stroke-width="1"></line>
+      <g stroke="var(--rule)" stroke-width="1" stroke-dasharray="2 4">
+        <line x1="305" y1="56" x2="305" y2="272"></line>
+        <line x1="440" y1="56" x2="440" y2="272"></line>
+        <line x1="575" y1="56" x2="575" y2="272"></line>
+        <line x1="710" y1="56" x2="710" y2="272"></line>
+      </g>
+
+      <!-- Row A: from primary diagnosis -->
+      <text x="158" y="100" text-anchor="end" font-family="'Source Sans 3',sans-serif" font-size="13.5" font-weight="600" fill="var(--ink)">From primary dx</text>
+      <text x="158" y="117" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="var(--ink-3)">log-rank p = 0.47</text>
+      <line x1="558" y1="104" x2="592" y2="104" stroke="var(--rule-strong)" stroke-width="2"></line>
+      <circle cx="558" cy="104" r="7" fill="var(--mbm)"></circle>
+      <circle cx="592" cy="104" r="7" fill="var(--sbm)"></circle>
+      <text x="546" y="108.5" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="var(--mbm)">23.0</text>
+      <text x="604" y="108.5" text-anchor="start" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="var(--sbm)">25.0</text>
+
+      <!-- Row B: from BM diagnosis -->
+      <text x="158" y="170" text-anchor="end" font-family="'Source Sans 3',sans-serif" font-size="13.5" font-weight="600" fill="var(--ink)">From BM dx</text>
+      <text x="158" y="187" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="var(--crit)">log-rank p &lt; 0.001</text>
+      <line x1="354" y1="174" x2="592" y2="174" stroke="var(--rule-strong)" stroke-width="2"></line>
+      <circle cx="354" cy="174" r="7" fill="var(--mbm)"></circle>
+      <circle cx="592" cy="174" r="7" fill="var(--sbm)"></circle>
+      <text x="342" y="178.5" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="var(--mbm)">11.1</text>
+      <text x="604" y="178.5" text-anchor="start" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="var(--sbm)">25.0</text>
+
+      <!-- Row C: landmark -->
+      <text x="158" y="240" text-anchor="end" font-family="'Source Sans 3',sans-serif" font-size="13.5" font-weight="600" fill="var(--ink)">4-mo landmark</text>
+      <text x="158" y="257" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="var(--ink-3)">log-rank p = 0.20</text>
+      <line x1="485" y1="244" x2="667" y2="244" stroke="var(--rule-strong)" stroke-width="2"></line>
+      <circle cx="485" cy="244" r="7" fill="var(--mbm)"></circle>
+      <circle cx="667" cy="244" r="7" fill="var(--sbm)"></circle>
+      <text x="473" y="248.5" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="var(--mbm)">19.0</text>
+      <text x="679" y="248.5" text-anchor="start" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="var(--sbm)">30.0</text>
+
+      <text x="440" y="302" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="12.5" fill="var(--ink-3)">Median overall survival (months)</text>
+    </svg>
+    <figcaption>Kaplan–Meier medians recomputed from the raw cohort file. The synchronous marker barely moves between clocks because time-to-BM is ~0 in that group; the metachronous marker collapses by more than half. The landmark row is the immortal-time-corrected comparison of survival from primary diagnosis (residual OS beyond 4 months; 8 sBM patients died before the landmark and are excluded).</figcaption>
+  </figure>
+
+  <div class="col">
+    <p style="margin-top:28px">This is not a nuance to bury in limitations — it is the most defensible finding in the dataset, and it contradicts the abstract's current conclusion. The abstract reports "a trend toward longer OS" in mBM (27.6 vs 22.4 months, p&nbsp;=&nbsp;0.076); the cohort file yields 23.0 vs 25.0 months with p&nbsp;=&nbsp;0.47, which is also the p-value printed in your own <span class="mono">lung_brain_analysis</span> report. The trend is not merely absent; when the clock is set correctly it points the other way.</p>
+    <p>Clinically it makes sense. A metachronous brain metastasis appears in disease that has already been treated and has already escaped systemic therapy. A synchronous one is present in a treatment-naive patient who then receives full first-line therapy. Post-BM survival should be worse in mBM, and here it is.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="sechead"><span class="secnum">02</span><h2>Reconciling the abstract against the file</h2></div>
+    <p class="dek">Every quantitative claim in Abstract 2202, checked against <span class="mono">20260719cohort.xlsx</span>. None of the headline numbers reproduce.</p>
+  </div>
+
+  <div class="tblwrap">
+  <table>
+    <thead><tr><th class="what">Claim</th><th>Abstract 2202</th><th>Cohort file</th><th style="width:110px">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="what">Cohort size<small>sBM / mBM split</small></td>
+        <td class="claim">124 (84 sBM; 40 mBM)</td>
+        <td class="actual num">116 (88 sBM; 28 mBM)</td>
+        <td><span class="chip c-crit">Mismatch</span></td></tr>
+      <tr><td class="what">Time to BM in mBM</td>
+        <td class="claim">111 ± 50 days (median)</td>
+        <td class="actual num">Median 347 (IQR 215–622); mean 559 ± 589; range 121–2466</td>
+        <td><span class="chip c-crit">Mismatch</span></td></tr>
+      <tr><td class="what">Overall survival</td>
+        <td class="claim">27.6 vs 22.4 mo, p = 0.076</td>
+        <td class="actual num">23.0 vs 25.0 mo, p = 0.47</td>
+        <td><span class="chip c-crit">Mismatch</span></td></tr>
+      <tr><td class="what"><span class="gene">TP53</span>/<span class="gene">EGFR</span></td>
+        <td class="claim">33.3% vs 5.6%</td>
+        <td class="actual num">14.8% (13/88) vs 3.6% (1/28); p = 0.18</td>
+        <td><span class="chip c-crit">Mismatch</span></td></tr>
+      <tr><td class="what"><span class="gene">TP53</span>/<span class="gene">KRAS</span></td>
+        <td class="claim">27.4% vs 11.1%</td>
+        <td class="actual num">17.0% (15/88) vs 10.7% (3/28); p = 0.56</td>
+        <td><span class="chip c-crit">Mismatch</span></td></tr>
+      <tr><td class="what">9p21.3 co-deletion<small>CDKN2A/CDKN2B/MTAP</small></td>
+        <td class="claim">16.7% vs 17.5%</td>
+        <td class="actual num">13.6% (12/88) vs 21.4% (6/28); p = 0.37</td>
+        <td><span class="chip c-crit">Mismatch</span></td></tr>
+      <tr><td class="what">"Only recurrent 3-gene co-alteration in mBM"</td>
+        <td class="claim">9p21.3 alone</td>
+        <td class="actual"><span class="gene">CDKN2A</span>+<span class="gene">CDKN2B</span>+<span class="gene">KRAS</span> (n = 3) and <span class="gene">CDKN2A</span>+<span class="gene">KRAS</span>+<span class="gene">MTAP</span> (n = 3) also recur</td>
+        <td><span class="chip c-crit">Incorrect</span></td></tr>
+      <tr><td class="what">Adenocarcinoma</td>
+        <td class="claim">77.4% vs 85.0%</td>
+        <td class="actual num">78.4% vs 85.7%</td>
+        <td><span class="chip c-warn">Close</span></td></tr>
+      <tr><td class="what">PD-L1 TC0</td>
+        <td class="claim">34.5% vs 32.5%</td>
+        <td class="actual num">33.0% vs 35.7%</td>
+        <td><span class="chip c-warn">Close</span></td></tr>
+      <tr><td class="what">IC1 in sBM</td>
+        <td class="claim">33.3%</td>
+        <td class="actual num">31.8% (28/88)</td>
+        <td><span class="chip c-warn">Close</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="col">
+    <div class="note"><b>Internal inconsistency inside the abstract itself.</b> The mBM percentages imply two different denominators: 5.6% and 11.1% are 2/36 and 4/36, while 17.5% is 7/40. Whichever version of the dataset produced the abstract, the mBM group was counted as both 36 and 40 patients in the same Results paragraph. Separately, <span class="mono">"111 ± 50 days"</span> reports a median with a standard deviation — a statistic mismatch — and does not reconcile with your own Table PDF, which gives 558 ± 589 days for the same quantity.</div>
+    <p style="margin-top:24px">The most likely explanation is that the abstract was written from an earlier or larger data extract than the file supplied here. That is recoverable, but it has to be resolved before anything is written: <b>fix the dataset first, then write the paper from it</b>, rather than trying to make the file support numbers it does not contain.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="sechead"><span class="secnum">03</span><h2>Fixing the data</h2></div>
+    <p class="dek">Ordered by how much each one threatens the paper. The first four are blocking; a reviewer at any thoracic-oncology journal will find them.</p>
+  </div>
+
+  <ol class="fixes">
+    <li><div>
+      <div class="fix-h"><strong>The cohort is not entirely NSCLC</strong><span class="chip c-crit">Blocking</span></div>
+      <p>12/116 patients (10.3%) carry small-cell, neuroendocrine or carcinoid histology — 5 small cell carcinoma NOS, 5 large cell neuroendocrine carcinoma, 1 carcinoid, 1 small cell sarcoma. OncoTree codes 11 patients as <span class="mono">LNET</span> and one as <span class="mono">MBC</span> (breast). The title and every conclusion say NSCLC. SCLC has entirely different BM biology, incidence and management.</p>
+      <p class="do"><b>Do:</b> restrict the primary analysis to confirmed NSCLC (adenocarcinoma, squamous, adenosquamous, large cell, NSCLC-NOS), report the excluded cases in the flow diagram, and pre-specify whether LCNEC is in or out. Re-run every frequency on the clean denominator.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>Reconcile 116 vs 124 and lock the data version</strong><span class="chip c-crit">Blocking</span></div>
+      <p>The file, your Table PDF and your analysis PDF all agree on 88 + 28 = 116. The abstract says 84 + 40 = 124. Eight patients are unaccounted for and the group ratio differs substantially.</p>
+      <p class="do"><b>Do:</b> freeze one extract with a stated cutoff date, give it a version identifier, and build a CONSORT-style flow diagram (screened → NSCLC → radiologically confirmed BM → CGP available → analysed). Every table in the paper comes from that one file.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>Missingness is differential between the groups</strong><span class="chip c-crit">Blocking</span></div>
+      <p>ECOG, stage, smoking status, PD-L1 (numeric), TMB (numeric), metastatic sites and treatment lines are all missing for exactly 44 patients — and the missingness is unbalanced: <span class="num">38/88 (43%) of sBM versus 6/28 (21%) of mBM</span>. Any sBM-vs-mBM comparison of these variables is confounded by who happens to have been annotated. "Unknown" is currently the largest single category for ECOG and stage in the sBM arm.</p>
+      <p class="do"><b>Do:</b> retrieve the missing clinical annotation from the primary record where possible. Where it cannot be retrieved, report complete-case n for every variable, test whether annotated and non-annotated patients differ, and use multiple imputation for the multivariable model — or drop those covariates from it.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>Overall survival has no declared time unit or origin</strong><span class="chip c-crit">Blocking</span></div>
+      <p>Your own Table PDF flags this in a footnote: <span class="mono">"Time unit missing (days/months/years)"</span>. Reconstructing from diagnosis dates confirms the values are months from primary diagnosis, but this is inference, not documentation. Censoring is also undefined — 27 patients are alive with a mean recorded OS of 41.8 months, so the column is mixing follow-up time and survival time without a censoring indicator beyond <span class="mono">Is Deceased</span>.</p>
+      <p class="do"><b>Do:</b> add explicit <span class="mono">date_of_death</span>, <span class="mono">date_last_followup</span> and <span class="mono">censor</span> columns. Define and report two endpoints separately: OS from primary diagnosis and OS from BM diagnosis. State the follow-up cutoff and report median follow-up by reverse Kaplan–Meier.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>Duplicate variant entries inflate alteration counts</strong><span class="chip c-warn">Important</span></div>
+      <p>20/116 patients have repeated entries in <span class="mono">Pathogenic variants (list)</span> — 73 duplicate rows in total. One patient lists <span class="gene">CDKN2A</span> p.(Ala60Glu) twice and <span class="gene">TP53</span> p.(Arg342fs*5) twice. Raw <span class="gene">CDKN2A</span> "loss" strings total 29 across the cohort but map to only 26 distinct patients.</p>
+      <p class="do"><b>Do:</b> de-duplicate per patient before any frequency is computed, and state in Methods that alteration frequencies are patient-level, not variant-level.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>"9p21.3 co-deletion" is defined inconsistently</strong><span class="chip c-warn">Important</span></div>
+      <p>Your analysis PDF labels a subgroup <span class="mono">"CDKN2A loss/CDKN2B loss/MTAP loss"</span> with n = 18 vs 7, but those are the counts for <span class="gene">CDKN2A</span> loss alone (18 vs 8 in the file). True three-gene co-deletion is 12 vs 6 (18 patients, 15.5%). The label reads as an intersection while the numbers behave like a union. The same PDF also reports χ² = 0.003 with p = 0.47 for that subgroup, which cannot both be true, and repeats the p-value from the section above it.</p>
+      <p class="do"><b>Do:</b> define the locus once — copy-number loss of all three of <span class="gene">CDKN2A</span>, <span class="gene">CDKN2B</span> and <span class="gene">MTAP</span> — and use it everywhere. Report the single-gene and two-gene subsets separately. Exclude <span class="gene">CDKN2A</span> point mutations from any claim about the co-deletion; 14 of the 40 <span class="gene">CDKN2A</span>-altered patients carry missense, nonsense or frameshift variants rather than loss.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>Assay platform is heterogeneous and the profiling window is wrong</strong><span class="chip c-warn">Important</span></div>
+      <p>The abstract states all patients had FoundationOne CDx between November 2021 and December 2025. The file records FoundationOne CDx for 68, FoundationOne Research-Only for 2, one FoundationOne LiquidCDx, and no assay at all for 44. Molecular tumour board dates run from May 2019, and primary diagnoses go back to July 2014.</p>
+      <p class="do"><b>Do:</b> report the assay actually used per patient with test dates, and state the panel version. Tissue and liquid biopsy have different copy-number sensitivity — a LiquidCDx case cannot contribute a confident 9p21.3 deletion call and should be excluded from the co-deletion denominator or handled in sensitivity analysis.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>The 3-month cut-off is arbitrary, though the data happen to support it</strong><span class="chip c-ok">Minor</span></div>
+      <p>Usefully, there is a natural gap: sBM ranges 0–71 days and mBM starts at 121 days, so no patient sits near the boundary and the classification is robust. But 6 sBM patients have non-zero times (2–71 days) and the analysis PDF describes the split as <span class="mono">"&lt;900 Tage"</span> and <span class="mono">"≥90 Tage"</span> in the same sentence.</p>
+      <p class="do"><b>Do:</b> state the rule once, cite the precedent for 3 months, note the observed gap as support, and add a sensitivity analysis at a strict 0-day (truly synchronous) definition.</p>
+    </div></li>
+
+    <li><div>
+      <div class="fix-h"><strong>One patient has a brain metastasis after last contact</strong><span class="chip c-ok">Minor</span></div>
+      <p>Time-to-BM exceeds recorded overall survival in one case, giving negative post-BM survival. There is also a coding-consistency issue in the metastasis field: <span class="mono">"Bone"/"Bones"</span>, <span class="mono">"Lymph Node"/"Lymph Nodes"</span> and <span class="mono">"Meninges"/"Cerebral Meninges"</span> appear as separate categories.</p>
+      <p class="do"><b>Do:</b> resolve the date conflict against the source record, and map metastatic sites onto a controlled vocabulary before tabulating.</p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="col">
+    <div class="sechead"><span class="secnum">04</span><h2>Why the current hypothesis cannot be tested here</h2></div>
+    <p class="dek">The abstract concludes that 9p21.3 co-deletion "might represent a biomarker of BM risk." That inference is not available from this study design, for three independent reasons.</p>
+
+    <p><b>Every patient has brain metastases.</b> A risk biomarker requires a comparison against NSCLC patients who did not develop BM. Without that arm, an alteration found in 15.5% of the cohort cannot be shown to be enriched in anything — you have no denominator for the counterfactual.</p>
+
+    <p><b>15.5% is unremarkable for NSCLC.</b> Three-gene 9p21.3 co-deletion at this frequency sits inside the range reported for unselected NSCLC in public cohorts. The observation "it is the most frequent complex alteration in both groups" is therefore expected, not informative — <span class="gene">CDKN2A</span>/<span class="gene">CDKN2B</span>/<span class="gene">MTAP</span> are contiguous on 9p21.3 and are co-deleted together by construction, so a single deletion event automatically becomes the leading "three-gene co-alteration" in any panel-sequenced cohort.</p>
+
+    <p><b>It carries no prognostic signal in these data.</b> Co-deleted patients have a median OS of 15.0 versus 24.0 months, but the curves do not separate: log-rank p&nbsp;=&nbsp;0.84, Cox HR&nbsp;0.94 (95% CI 0.52–1.70). In the landmark multivariable model adjusting for group, age, sex and histology, HR&nbsp;0.92 (0.49–1.72), p&nbsp;=&nbsp;0.78.</p>
+
+    <div class="note"><b>The power problem underneath all of this.</b> With 28 mBM patients and 26 events, the study can only exclude the null for hazard ratios of roughly 1.8 and above. The 9p21.3 group has 18 patients. Comparisons of a 15%-prevalence alteration across a 28-patient arm produce expected cell counts near 4 — below the threshold where Fisher's exact test has meaningful power, and far below what multiplicity correction across dozens of genes will survive. Framing the paper around a between-group genomic difference is framing it around a question this cohort cannot answer.</div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="sechead"><span class="secnum">05</span><h2>The hypothesis to build the paper on</h2></div>
+    <p class="dek">Invert the structure. Lead with the survival finding, which is real and significant; present the genomic similarity as a supporting negative result rather than the headline.</p>
+  </div>
+
+  <div class="hyp">
+    <div class="hcard primary">
+      <span class="hrole">Primary hypothesis</span>
+      <p class="hstate">The timing of brain-metastasis onset in NSCLC marks two distinct clinical trajectories, and the apparent survival advantage of metachronous disease is an artifact of the survival clock: when survival is measured from brain-metastasis diagnosis, metachronous BM carries substantially worse prognosis than synchronous BM.</p>
+      <p class="hwhy"><b>Supported by the data:</b> 11.1 vs 25.0 months, log-rank p&nbsp;&lt;&nbsp;0.001, with 89 events. This is the only strongly significant result in the cohort, it is clinically actionable, and it directly corrects a bias that recurs throughout the sBM/mBM literature.</p>
+    </div>
+
+    <div class="hcard">
+      <span class="hrole">Secondary hypothesis</span>
+      <p class="hstate">Brain-metastatic competence in NSCLC is established at or before primary diagnosis: sBM and mBM tumours share their driver and co-alteration architecture, so the timing of BM onset reflects treatment exposure, host and surveillance factors rather than a distinct metastatic genotype.</p>
+      <p class="hwhy"><b>Supported by the data:</b> no alteration or co-alteration differs significantly between groups after FDR correction — 9p21.3 co-deletion 13.6% vs 21.4% (p&nbsp;=&nbsp;0.37), <span class="gene">TP53</span> 60.2% vs 50.0%, <span class="gene">KRAS</span> 37.5% vs 39.3%. Framed as a pre-specified negative finding with a stated power limit, this is publishable; framed as a positive claim about 9p21.3, it is not.</p>
+    </div>
+
+    <div class="hcard">
+      <span class="hrole">Exploratory / translational</span>
+      <p class="hstate">9p21.3 co-deletion identifies a therapeutically addressable subgroup within NSCLC brain metastases, independent of the timing of BM onset.</p>
+      <p class="hwhy"><b>This is the defensible version of your therapeutic argument.</b> 18 patients (15.5%) have <span class="gene">MTAP</span> loss, which is a live target — PRMT5 and MAT2A inhibitors are in clinical development specifically for MTAP-deleted tumours, and CDK4/6 inhibition is being explored for <span class="gene">CDKN2A</span>-null disease. Stating that this subgroup exists, is routinely detected on the panel already in clinical use, and is enriched for CNS involvement in need of new options requires no risk claim at all.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="sechead"><span class="secnum">06</span><h2>What the paper needs before submission</h2></div>
+    <p class="dek">Beyond the data fixes: the analyses and comparators that turn this cohort into a manuscript.</p>
+  </div>
+
+  <ul class="reqs">
+    <li><span><b>A BM-free NSCLC comparator arm.</b> Non-negotiable if any risk language survives into the paper. Your own institutional CGP archive is the obvious source — NSCLC patients profiled in the same period who never developed BM, matched on stage and follow-up duration.</span></li>
+    <li><span><b>External replication of the genomic frequencies.</b> AACR Project GENIE or TCGA-LUAD gives you the background 9p21.3 rate in unselected NSCLC, which is what converts "15.5% in our cohort" into a statement about enrichment or its absence.</span></li>
+    <li><span><b>Both survival clocks, reported side by side.</b> OS from primary diagnosis and OS from BM diagnosis, each as a Kaplan–Meier curve with numbers at risk. Present the discrepancy as a finding — it is one.</span></li>
+    <li><span><b>Immortal-time handling in the primary analysis.</b> Either a landmark analysis with a pre-specified landmark, or BM status as a time-dependent covariate in the Cox model. State which and why in Methods, not in Limitations.</span></li>
+    <li><span><b>A competing-risks model for time to BM.</b> Death without brain metastasis is a competing event; a Fine–Gray subdistribution model is the correct treatment, and Kaplan–Meier will overestimate cumulative BM incidence without it.</span></li>
+    <li><span><b>Multiplicity control, stated up front.</b> Your forest plot already applies Benjamini–Hochberg. Carry that through every genomic comparison in the paper and report adjusted p-values in the main tables, not only in the supplement.</span></li>
+    <li><span><b>Local CNS therapy as a covariate.</b> SRS, whole-brain radiotherapy and neurosurgical resection differ systematically between sBM and mBM and are strong confounders of post-BM survival. The cohort file records therapy strings but not CNS-directed treatment as a discrete variable.</span></li>
+    <li><span><b>CNS penetration of systemic therapy.</b> Osimertinib is given to 11 sBM patients and 1 mBM patient; <span class="gene">MET</span> alterations appear in 10 sBM and 0 mBM. Differential access to CNS-active agents is a plausible driver of the post-BM survival gap and needs to be addressed directly.</span></li>
+    <li><span><b>REMARK and STROBE checklists.</b> This is a retrospective prognostic biomarker study; both apply, and journals in this space increasingly require them at submission.</span></li>
+  </ul>
+
+  <div class="col">
+    <div class="note" style="margin-top:34px"><b>On the ESMO abstract itself.</b> If Abstract 2202 has already been accepted, the presented numbers should be corrected against the frozen dataset before the poster or slides are finalised — particularly the OS comparison, which currently states a trend in the opposite direction to what the data show. If it is still under revision, the survival reversal is a considerably stronger headline than the shared co-deletion.</div>
+  </div>
+</section>
+
+<footer>
+  <p>All figures recomputed from <span class="mono">20260719cohort.xlsx</span> (n = 116). Kaplan–Meier medians, log-rank tests and Cox models via <span class="mono">statsmodels</span>; co-alteration frequencies from de-duplicated patient-level variant lists; two-sided Fisher's exact tests for categorical comparisons. Analysis scripts are committed alongside this review.</p>
+</footer>
+
+</div>
