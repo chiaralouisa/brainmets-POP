@@ -23,6 +23,7 @@ python analysis/02_survival.py           # OS under three clocks; immortal-time 
 python analysis/03_9p21_prognostic.py    # 9p21.3 co-deletion definition audit + Cox models
 python analysis/04_data_quality.py       # missingness, duplicate variants, histology audit
 python analysis/05_abstract_statistics.py # figures quoted in the revised abstract
+python analysis/06_external_background_rate.py --live  # background 9p21.3 rate (needs cbioportal.org)
 ```
 
 ## Headline result
@@ -50,3 +51,10 @@ record whose BM date falls after last follow-up still contributes, giving 28 eva
 patients.
 
 Revised abstract: [`docs/abstract-revised.md`](docs/abstract-revised.md).
+
+## 9p21.3 is the background rate, not enrichment
+
+Against 29,379 NSCLC cases profiled by comparable hybrid-capture CGP, the cohort's 9p21.3
+co-deletion rate is not elevated: 15.5% vs 13.4%, OR 1.19, p = 0.49. Benchmarking instead
+against AACR GENIE (5.7%) would suggest three-fold enrichment, but that difference is gene-panel
+coverage rather than biology. See [`docs/external-background-rate.md`](docs/external-background-rate.md).
