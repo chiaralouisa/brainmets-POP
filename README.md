@@ -24,6 +24,8 @@ python analysis/03_9p21_prognostic.py    # 9p21.3 co-deletion definition audit +
 python analysis/04_data_quality.py       # missingness, duplicate variants, histology audit
 python analysis/05_abstract_statistics.py # figures quoted in the revised abstract
 python analysis/06_external_background_rate.py --live  # background 9p21.3 rate (needs cbioportal.org)
+python analysis/07_figures.py            # Figure 1: both survival clocks with numbers at risk
+python analysis/08_immortal_time_and_covariates.py  # landmark, time-dependent Cox, CNS therapy
 ```
 
 ## Headline result
@@ -58,3 +60,15 @@ Against 29,379 NSCLC cases profiled by comparable hybrid-capture CGP, the cohort
 co-deletion rate is not elevated: 15.5% vs 13.4%, OR 1.19, p = 0.49. Benchmarking instead
 against AACR GENIE (5.7%) would suggest three-fold enrichment, but that difference is gene-panel
 coverage rather than biology. See [`docs/external-background-rate.md`](docs/external-background-rate.md).
+
+## Manuscript
+
+Draft: [`docs/manuscript-draft.md`](docs/manuscript-draft.md), also as `docs/manuscript-draft.docx`
+for circulation. Thirteen `[TO COMPLETE]` markers flag what needs data not in the current
+cohort file — chiefly the BM-free comparator arm and CNS-directed therapy.
+
+Three analyses are **not estimable in a BM-only cohort** and are specified against the
+comparator arm instead: enrichment testing, a Fine–Gray competing-risks model for time to
+BM, and a time-dependent Cox model (BM status is perfectly separated — 0 deaths across 28
+BM-free intervals — so the model is unidentifiable). The pre-specified 4-month landmark is
+the immortal-time correction that does work here.
