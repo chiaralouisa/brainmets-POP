@@ -83,6 +83,17 @@ kids.push(new Paragraph({spacing:{after:160},children:runs(
   'Overall survival in synchronous and metachronous brain metastases under two time origins. (A) From primary lung cancer diagnosis; (B) from brain-metastasis diagnosis. Kaplan-Meier estimates with censoring marks and numbers at risk. The same 116 patients and 89 deaths underlie both panels. Curves are shown over the full observation period (to 129 months); fewer than five patients per group remain at risk beyond 48 months.',
   {size:19,font:'Calibri'})}));
 
+kids.push(new Paragraph({children:[new PageBreak()]}));
+kids.push(new Paragraph({heading:HeadingLevel.HEADING_2,spacing:{after:160},
+  children:runs('Figure 2',{font:'Calibri'})}));
+kids.push(new Paragraph({spacing:{after:160},children:[new ImageRun({
+  type:'png',
+  data:fs.readFileSync('/home/user/brainmets-POP/figures/figure2_oncoplot.png'),
+  transformation:{width:660,height:422}})]}));
+kids.push(new Paragraph({spacing:{after:160},children:runs(
+  'Oncoplot of the 20 most frequently altered genes, synchronous beside metachronous brain metastases. Each column is one patient, ordered within group by alteration pattern; each row is one gene, ordered by cohort-wide frequency except that the three 9p21.3 genes are held adjacent because they are contiguous on the chromosome and lost in a single event. Copy-number events fill the whole cell and short variants are drawn as an inset bar, so alteration class is carried by geometry as well as colour. The bar above shows the number of altered genes per patient; percentages at right are within-group frequencies. No alteration differed significantly between groups after Benjamini-Hochberg correction.',
+  {size:19,font:'Calibri'})}));
+
 const doc=new Document({
   styles:{default:{
     document:{run:{font:'Calibri',size:21},paragraph:{spacing:{line:300}}},

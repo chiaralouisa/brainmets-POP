@@ -198,7 +198,9 @@ were not independently associated with survival.
 ### 3.3 The genomic landscape is shared between the groups
 
 The most frequently altered genes across the cohort were *TP53* (57.8%), *KRAS* (37.9%),
-*CDKN2A* (34.5%), *STK11* (21.6%) and *EGFR* (16.4%). Comparing sBM with mBM, 42 recurrent
+*CDKN2A* (34.5%), *STK11* (21.6%) and *EGFR* (16.4%). The alteration landscape of the two
+groups is shown in **Figure 2**, with both groups placed in one matrix under a single gene
+ordering so that columns can be compared directly. Comparing sBM with mBM, 42 recurrent
 alterations (gene and alteration type, each observed in ≥5 patients) were tested. **None
 was significantly different after Benjamini–Hochberg correction** (**Table 2**). The
 smallest adjusted value was q = 0.17, for *MYC* amplification (5.7% sBM vs 25.0% mBM, raw
@@ -214,7 +216,9 @@ Co-deletion of *CDKN2A*, *CDKN2B* and *MTAP* at 9p21.3 was the most frequent com
 alteration in the cohort, in 18/116 patients (15.5%, 95% CI 9.5–23.4): 12/88 sBM (13.6%)
 and 6/28 mBM (21.4%; p = 0.37). All 18 *MTAP* losses co-occurred with both *CDKN2A* and
 *CDKN2B* loss (18/18), consistent with a single contiguous deletion event rather than
-independent gene-level calls.
+independent gene-level calls. This is visible directly in **Figure 2**, where the three
+9p21.3 rows are drawn adjacently and their deletions align into vertical blocks in both
+groups.
 
 Co-deletion was not associated with survival, on either clock: HR 0.94 (95% CI 0.52–1.70,
 p = 0.85) from primary diagnosis and HR 1.17 (95% CI 0.65–2.10, p = 0.61) from BM
@@ -363,6 +367,17 @@ metachronous group. Curves are shown over the full observation period (to 129 mo
 fewer than five patients per group remain at risk beyond 48 months, and no metachronous
 patient remains at risk beyond 48 months in panel B.
 → `figures/figure1_survival_both_clocks.pdf`
+
+**Figure 2.** Oncoplot of the 20 most frequently altered genes, synchronous beside
+metachronous brain metastases. Each column is one patient, ordered within group by
+alteration pattern; each row is one gene, ordered by cohort-wide frequency except that the
+three 9p21.3 genes are held adjacent because they are contiguous on the chromosome and lost
+in a single event. Copy-number events fill the whole cell and short variants are drawn as an
+inset bar, so alteration class is carried by geometry as well as colour. The bar above shows
+the number of altered genes per patient; percentages at right are within-group frequencies.
+No alteration differed significantly between groups after Benjamini–Hochberg correction
+(Table 2).
+→ `figures/figure2_oncoplot.pdf`
 
 **Figure S1.** CONSORT-style patient flow diagram. **[TO COMPLETE]**
 

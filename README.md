@@ -25,6 +25,7 @@ python analysis/04_data_quality.py       # missingness, duplicate variants, hist
 python analysis/05_abstract_statistics.py # figures quoted in the revised abstract
 python analysis/06_external_background_rate.py --live  # background 9p21.3 rate (needs cbioportal.org)
 python analysis/07_figures.py            # Figure 1: both survival clocks with numbers at risk
+python analysis/10_oncoplot.py           # Figure 2: oncoplot, sBM beside mBM
 python analysis/08_immortal_time_and_covariates.py  # landmark, time-dependent Cox, CNS therapy
 ```
 
