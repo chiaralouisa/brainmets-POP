@@ -26,6 +26,7 @@ python analysis/05_abstract_statistics.py # figures quoted in the revised abstra
 python analysis/06_external_background_rate.py --live  # background 9p21.3 rate (needs cbioportal.org)
 python analysis/07_figures.py            # Figure 1: both survival clocks with numbers at risk
 python analysis/10_oncoplot.py           # Figure 2: oncoplot, sBM beside mBM
+python analysis/11_poster_figures.py     # poster-scale variants (figures/poster/)
 python analysis/08_immortal_time_and_covariates.py  # landmark, time-dependent Cox, CNS therapy
 ```
 
@@ -73,3 +74,12 @@ comparator arm instead: enrichment testing, a Fine–Gray competing-risks model 
 BM, and a time-dependent Cox model (BM status is perfectly separated — 0 deaths across 28
 BM-free intervals — so the model is unidentifiable). The pre-specified 4-month landmark is
 the immortal-time correction that does work here.
+
+## ESMO 2026 e-poster
+
+`poster-canvas/` holds the source of the e-poster: one 2560x1440 landscape artboard
+(16:9, the usual e-poster screen canvas) covering background, study design, results,
+summary and conclusion. Poster-scale figures are in `figures/poster/`.
+
+Confirm ESMO's own e-poster specification before submitting; if it calls for A0 portrait,
+the artboard is reflowed rather than rebuilt.

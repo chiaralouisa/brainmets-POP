@@ -1,0 +1,20 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-09-18T14:10:00Z" },
+  "title": "ESMO 2026 Brain Metastases E-Poster",
+  "launch": { "view": "focused", "file": "Main.dc.html" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 2560,
+      "h": 1440,
+      "title": "ESMO 2026 e-Poster — Abstract 2202",
+      "print": "fixed"
+    }
+  },
+  "order": ["Main.dc.html"],
+  "notes": {},
+  "designSystems": []
+}
