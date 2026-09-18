@@ -1,0 +1,70 @@
+idx,mBM,change,shortname,pos,conseq,n_labels,domain
+0,0,Leu194Arg,L194R,194.0,Missense,2,DNA-binding
+1,0,Ser215Ile,S215I,215.0,Missense,1,DNA-binding
+3,0,Arg342fs*5,R342fs,342.0,Frameshift,1,Tetramerisation
+4,0,Pro250Leu,P250L,250.0,Missense,1,DNA-binding
+6,0,Glu180*,E180*,180.0,Nonsense,1,DNA-binding
+7,0,Gly187fs*60,G187fs,187.0,Frameshift,1,DNA-binding
+9,1,Arg158Gly,R158G,158.0,Missense,1,DNA-binding
+14,1,Arg273Leu,R273L,273.0,Missense,1,DNA-binding
+16,1,(no protein change given),(no protein change given),,Splice,1,inter-domain
+18,1,Arg174Trp,R174W,174.0,Missense,1,DNA-binding
+21,0,Arg337Leu,R337L,337.0,Missense,1,Tetramerisation
+22,0,Val173Leu,V173L,173.0,Missense,1,DNA-binding
+24,0,Ala161Thr,A161T,161.0,Missense,1,DNA-binding
+26,1,Glu343*,E343*,343.0,Nonsense,1,Tetramerisation
+29,1,Tyr236Cys,Y236C,236.0,Missense,1,DNA-binding
+30,0,Val173Leu,V173L,173.0,Missense,2,DNA-binding
+34,0,Arg175His,R175H,175.0,Missense,1,DNA-binding
+35,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+39,0,Glu171fs*3,E171fs,171.0,Frameshift,1,DNA-binding
+40,0,Arg273His,R273H,273.0,Missense,2,DNA-binding
+43,0,His179Arg,H179R,179.0,Missense,1,DNA-binding
+46,0,Arg280Ser,R280S,280.0,Missense,1,DNA-binding
+46,0,Pro222Leu,P222L,222.0,Missense,1,DNA-binding
+47,1,Asp259Tyr,D259Y,259.0,Missense,1,DNA-binding
+48,0,Glu294*,E294*,294.0,Nonsense,1,inter-domain
+49,0,Gln100fs*23,Q100fs,100.0,Frameshift,1,inter-domain
+50,0,Arg248Trp,R248W,248.0,Missense,2,DNA-binding
+51,0,Ile50fs*2,I50fs,50.0,Frameshift,2,Transactivation 2
+53,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+54,0,Cys141Trp,C141W,141.0,Missense,1,DNA-binding
+55,0,Arg280Lys,R280K,280.0,Missense,1,DNA-binding
+56,0,Asp281Glu,D281E,281.0,Missense,2,DNA-binding
+57,1,Gly266fs*5,G266fs,266.0,Frameshift,1,DNA-binding
+59,1,Glu204*,E204*,204.0,Nonsense,2,DNA-binding
+60,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+61,1,Glu171*,E171*,171.0,Nonsense,1,DNA-binding
+62,0,Arg248Trp,R248W,248.0,Missense,1,DNA-binding
+63,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+64,0,Val157Phe,V157F,157.0,Missense,1,DNA-binding
+66,0,Glu294fs*51,E294fs,294.0,Frameshift,1,inter-domain
+68,0,Arg337Pro,R337P,337.0,Missense,1,Tetramerisation
+69,0,Gly199*,G199*,199.0,Nonsense,1,DNA-binding
+71,1,Cys135Arg,C135R,135.0,Missense,1,DNA-binding
+72,0,Arg337Cys,R337C,337.0,Missense,1,Tetramerisation
+73,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+79,0,Val274Phe,V274F,274.0,Missense,1,DNA-binding
+80,0,Gly244Ser,G244S,244.0,Missense,1,DNA-binding
+80,0,Glu56*,E56*,56.0,Nonsense,1,Transactivation 2
+82,0,Cys275Phe,C275F,275.0,Missense,1,DNA-binding
+83,1,His179Arg,H179R,179.0,Missense,1,DNA-binding
+84,0,Arg175His,R175H,175.0,Missense,1,DNA-binding
+85,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+86,0,Tyr220Cys,Y220C,220.0,Missense,2,DNA-binding
+88,1,Tyr163Cys,Y163C,163.0,Missense,1,DNA-binding
+89,1,Gly334Val,G334V,334.0,Missense,1,Tetramerisation
+90,0,Gly244Ser,G244S,244.0,Missense,1,DNA-binding
+92,0,Ser241Tyr,S241Y,241.0,Missense,1,DNA-binding
+93,0,Pro75fs*73,P75fs,75.0,Frameshift,1,Proline-rich
+96,0,Arg283Pro,R283P,283.0,Missense,1,DNA-binding
+97,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+99,0,(no protein change given),(no protein change given),,Splice,1,inter-domain
+101,0,Ile255_Thr256insIle,I255_Thr256insIle,255.0,In-frame indel,1,DNA-binding
+102,0,Tyr126Asp,Y126D,126.0,Missense,2,DNA-binding
+104,0,Gly245Cys,G245C,245.0,Missense,1,DNA-binding
+107,0,Pro72fs*51,P72fs,72.0,Frameshift,1,Proline-rich
+108,0,Pro190fs*57,P190fs,190.0,Frameshift,1,DNA-binding
+109,0,Arg280Lys,R280K,280.0,Missense,1,DNA-binding
+112,0,Val73fs*50,V73fs,73.0,Frameshift,1,Proline-rich
+113,0,Glu180_Arg181delinsAsp,E180_Arg181delinsAsp,180.0,In-frame indel,1,DNA-binding
