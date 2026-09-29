@@ -77,6 +77,15 @@ the immortal-time correction that does work here.
 
 ## ESMO 2026 e-poster
 
+**Current version:** `poster/esmo2026_eposter.pdf` (+ `.png`, `.html`), built by
+`python poster/build_poster.py` from aggregate results only. It revises the canvas version
+below after a re-analysis of the interpretation; see
+[`docs/poster-interpretation.md`](docs/poster-interpretation.md). In short: the curves
+cross rather than reverse, the 4-month landmark is not a valid immortal-time correction,
+and the genomic null is underpowered, with a *MYC*-led amplification signal in mBM.
+
+### Earlier canvas version
+
 `poster-canvas/` holds the source of the e-poster: one 2560x1440 landscape artboard
 (16:9, the usual e-poster screen canvas) covering background, study design, results,
 summary and conclusion. Poster-scale figures are in `figures/poster/`.
