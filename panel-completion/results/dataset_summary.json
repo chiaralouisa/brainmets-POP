@@ -1,0 +1,26 @@
+{
+ "impact341_genes": 341,
+ "hidden_genes": 69,
+ "nsclc_impact410_samples": 1279,
+ "nsclc_impact410_patients": 1215,
+ "patients_with_multiple_impact410_samples": 60,
+ "pair_sparsity_any": 0.01110514701496988,
+ "positives_any": 931,
+ "positives_by_event": {
+  "mut": 707,
+  "amp": 170,
+  "dele": 57,
+  "driver": 360
+ },
+ "patients_with_any_hidden_alteration": 0.4312757201646091,
+ "genes_lt5_positives_whole_cohort": 13,
+ "genes_ge10_positives_whole_cohort": 30,
+ "single_15pct_split": {
+  "n_test": 182,
+  "genes_with_ge5_test_positives_median": 8.0,
+  "genes_with_zero_test_positives_median": 19.0
+ },
+ "genes_without_position": [
+  "H3C14"
+ ]
+}

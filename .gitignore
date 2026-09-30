@@ -4,3 +4,7 @@
 data/
 *.xlsx
 *.xls
+
+# panel-completion: derived matrices, fold predictions and model samples are rebuilt by the scripts
+panel-completion/cache/
+__pycache__/

@@ -1,0 +1,63 @@
+{
+ "cfm": {
+  "energy_score": 0.78159670781893,
+  "sampled_alteration_rate": 0.003493409673763941,
+  "true_alteration_rate": 0.01110514701496988,
+  "mean_hidden_alterations_per_patient": 0.24104526748971195,
+  "true_mean_hidden_alterations_per_patient": 0.7662551440329218,
+  "share_patients_with_any_sampled": 0.1605102880658436,
+  "true_share_patients_with_any": 0.4312757201646091
+ },
+ "indep_lr": {
+  "energy_score": 0.7175308641975309,
+  "sampled_alteration_rate": 0.010295938450527823,
+  "true_alteration_rate": 0.01110514701496988,
+  "mean_hidden_alterations_per_patient": 0.7104197530864198,
+  "true_mean_hidden_alterations_per_patient": 0.7662551440329218,
+  "share_patients_with_any_sampled": 0.47641975308641976,
+  "true_share_patients_with_any": 0.4312757201646091
+ },
+ "indep_prev": {
+  "energy_score": 0.7497119341563787,
+  "sampled_alteration_rate": 0.011629271783861157,
+  "true_alteration_rate": 0.01110514701496988,
+  "mean_hidden_alterations_per_patient": 0.8024197530864198,
+  "true_mean_hidden_alterations_per_patient": 0.7662551440329218,
+  "share_patients_with_any_sampled": 0.5561810699588478,
+  "true_share_patients_with_any": 0.4312757201646091
+ },
+ "cooccurrence_total": {
+  "observed": 117.0,
+  "cfm": 33.81,
+  "indep_lr": 54.05000000000001,
+  "indep_prev": 35.370000000000005
+ },
+ "mc_budget": [
+  {
+   "n_samples": 5,
+   "pooled_auroc": 0.5472606016036874,
+   "share_zero_probability": 0.9923540287469435
+  },
+  {
+   "n_samples": 10,
+   "pooled_auroc": 0.554395623046778,
+   "share_zero_probability": 0.9819765014612035
+  },
+  {
+   "n_samples": 20,
+   "pooled_auroc": 0.5699239356871824,
+   "share_zero_probability": 0.9693684022186437
+  },
+  {
+   "n_samples": 50,
+   "pooled_auroc": 0.5852232482204391,
+   "share_zero_probability": 0.9519532414862527
+  },
+  {
+   "n_samples": 100,
+   "pooled_auroc": 0.5964578250470276,
+   "share_zero_probability": 0.9097870817677581
+  }
+ ],
+ "cfm_t0_readout_pooled_auroc": 0.6414193238776695
+}

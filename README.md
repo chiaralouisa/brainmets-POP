@@ -83,3 +83,10 @@ summary and conclusion. Poster-scale figures are in `figures/poster/`.
 
 Confirm ESMO's own e-poster specification before submitting; if it calls for A0 portrait,
 the artboard is reflowed rather than rebuilt.
+
+## Panel-completion abstract: ML review
+
+A separate project in this repository. [`docs/panel-completion-ml-review.md`](docs/panel-completion-ml-review.md)
+reviews the flow-matching panel-completion abstract (MSK-CHORD, IMPACT341 → IMPACT505) from a machine-learning
+perspective. Every recommendation is tested on a public replicate (MSK-IMPACT 2017, IMPACT341 → IMPACT410) in
+[`panel-completion/`](panel-completion/).

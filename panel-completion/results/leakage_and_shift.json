@@ -1,0 +1,49 @@
+{
+ "A_split_granularity": {
+  "sample_split": {
+   "pooled_auroc_all": 0.7734594355396941,
+   "pooled_auroc_multi_sample_patients": 0.7995018502704241,
+   "macro_auroc_all": 0.7124478226986172
+  },
+  "patient_split": {
+   "pooled_auroc_all": 0.7671787831579265,
+   "pooled_auroc_multi_sample_patients": 0.7200873935711338,
+   "macro_auroc_all": 0.7008849897053055
+  },
+  "n_multi_sample_patients": 60,
+  "n_samples": 1279,
+  "sibling_hidden_jaccard_mean": 0.24666666666666665
+ },
+ "B_unassayed_as_wildtype": {
+  "n_impact410": 1215,
+  "n_impact341_added": 348,
+  "correct_exclude_unassayed": {
+   "pooled_auroc": 0.7755664205903422,
+   "macro_auroc": 0.7287632586405814,
+   "brier": 0.010417953133583069,
+   "predicted_over_observed": 0.9278381544332371
+  },
+  "naive_zero_fill": {
+   "pooled_auroc": 0.773906283179913,
+   "macro_auroc": 0.7325797819990094,
+   "brier": 0.010512271896004677,
+   "predicted_over_observed": 0.6904816099959721
+  }
+ },
+ "C_simulated_vs_real_assay": {
+  "n_patients": 167,
+  "n_same_cancer_type": 166,
+  "positives": 168,
+  "observed_panel_jaccard_between_assays": 0.44255730152085326,
+  "simulated_input": {
+   "pooled_auroc": 0.8373524354700048,
+   "macro_auroc": 0.7966852863119456,
+   "brier": 0.013106964528560638
+  },
+  "real_small_panel_input": {
+   "pooled_auroc": 0.6973813193264976,
+   "macro_auroc": 0.6121818218595524,
+   "brier": 0.014058388769626617
+  }
+ }
+}
