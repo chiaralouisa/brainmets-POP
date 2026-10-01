@@ -313,7 +313,7 @@ gap(3, 0.3);
 // ---------------------------------------------------------------- footer
 hline(M, FOOT_Y, W - 2 * M, INK, 1.5);
 const fy = FOOT_Y + 0.15, fs = 12.5, qr = 1.25;
-const fw = W - 2 * M - qr - 3 * 0.42;
+const fw = W - 2 * M - 2 * 0.42;
 const fx = [M, M + fw * 0.5 + 0.42, M + fw * 0.75 + 0.84];
 txt([{ text: "References", options: { bold: true, breakLine: true } },
   { text: "1. Jee J, et al. Automated real-world data integration improves cancer outcome prediction. Nature 2024;636:728–36.", options: { breakLine: true } },
@@ -321,12 +321,12 @@ txt([{ text: "References", options: { bold: true, breakLine: true } },
   { text: "3. Lipman Y, et al. Flow matching for generative modeling. ICLR 2023.   4. Collins GS, et al. TRIPOD+AI statement. BMJ 2024;385:e078378.", options: { breakLine: true } },
   { text: "5. Aldea M, et al. ESMO basic requirements for AI-based biomarkers in oncology (EBAI). Ann Oncol 2026;37:414–25." }],
   { x: fx[0], y: fy, w: fw * 0.5, h: 1.3, fontSize: fs, color: "2C3A47" });
-txt([{ text: "Data and code", options: { bold: true, breakLine: true } }, { text: "MSK-CHORD and msk_impact_2017 via cBioPortal. Code: github.com/chiaralouisa/brainmets-POP (QR)" }],
+txt([{ text: "Data and code", options: { bold: true, breakLine: true } }, { text: "MSK-CHORD and msk_impact_2017 via cBioPortal. Code and split IDs: github.com/chiaralouisa/brainmets-POP, available on request." }],
   { x: fx[1], y: fy, w: fw * 0.25, h: 1.3, fontSize: fs, color: "2C3A47" });
 txt([{ text: "Disclosures · Contact", options: { bold: true, breakLine: true } }, { text: "The authors declare no conflicts of interest.", options: { breakLine: true } },
   { text: "Louisa Hempel · louisa.hempel@googlemail.com" }],
   { x: fx[2], y: fy, w: fw * 0.25, h: 1.3, fontSize: fs, color: "2C3A47" });
-s.addImage({ path: "qr.png", x: W - M - qr, y: fy, w: qr, h: qr, altText: "QR code: github.com/chiaralouisa/brainmets-POP" });
+
 
 console.log("column bottoms (in):", cur.map((v) => v.toFixed(2)), "footer at", FOOT_Y.toFixed(2));
 pres.writeFile({ fileName: "ESMO_P305_poster.pptx" }).then((f) => console.log("wrote", f));
