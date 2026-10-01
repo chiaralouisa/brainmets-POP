@@ -64,7 +64,7 @@ const lead = (label, rest) => [{ text: label + " ", options: { bold: true } }, {
 // ---- column 1
 heading(0, "1  Introduction");
 para(0, "Comprehensive genomic profiling (CGP) underpins treatment selection in NSCLC, yet panel content varies widely across institutions and health-care systems. Smaller targeted panels reduce cost and turnaround time but leave part of the tumour genome unmeasured.");
-para(0, lead("Objective.", "To determine whether a conditional generative model can infer alterations in genes absent from a targeted panel, and to quantify which biological signals make this possible."), { after: 0.35 });
+para(0, lead("Objective.", "To learn the conditional distribution of alterations in genes absent from a targeted panel given the genes it measures, to benchmark it against simple statistical baselines, and to identify which signals make the missing genes predictable."), { after: 0.35 });
 heading(0, "2  Study design");
 {
   const y = cur[0], h = 0.62, w1 = CW * 0.675;
@@ -89,15 +89,18 @@ cur[0] -= 0.18;
   hline(colX(0), cur[0] + rowH * rows.length, CW, INK, 1.5);
   cur[0] += rowH * rows.length + 0.3;
 }
-para(0, lead("Alteration encoding.", "One binary event per gene and patient: non-synonymous mutation, amplification or deep deletion. One sample per patient; [state handling of VUS and structural variants]."));
+para(0, lead("Alteration encoding.", "Target: one binary event per gene and patient (non-synonymous mutation, amplification or deep deletion; [state VUS and structural-variant handling]). Input: separate mutation, amplification and deletion indicators for the 341 assayed genes. One sample per patient. Genes not covered by a sample's panel are treated as missing, never as wild type."));
 
 // ---- column 2
 heading(1, "3  Methods");
-para(1, [{ text: "3.1 Conditional flow matching. ", options: { bold: true } },
-  { text: "Let c ∈ {0,1}" }, { text: "p", options: { superscript: true } }, { text: " denote a patient's IMPACT341 profile and x" },
-  { text: "1", options: { subscript: true } }, { text: " ∈ {−1,+1}" }, { text: "164", options: { superscript: true } },
-  { text: " the target genes. A velocity field v" }, { text: "θ", options: { subscript: true } },
-  { text: " is trained along the linear path between Gaussian noise and data:" }]);
+para(1, [{ text: "3.1 Problem formulation. ", options: { bold: true } },
+  { text: "Given the observed IMPACT341 profile c, we learn the conditional distribution p(x" }, { text: "1", options: { subscript: true } },
+  { text: " | c) over the 164 target genes. Binary targets are embedded as x" }, { text: "1", options: { subscript: true } },
+  { text: " ∈ {−1,+1}" }, { text: "164", options: { superscript: true } },
+  { text: " (continuous relaxation); generated profiles are binarised by sign. Data were split by patient into 70% training, 15% validation (all model and hyper-parameter selection) and 15% test, evaluated once." }]);
+para(1, [{ text: "3.2 Conditional flow matching. ", options: { bold: true } },
+  { text: "A velocity field v" }, { text: "θ", options: { subscript: true } },
+  { text: " ([architecture]) is regressed onto the straight-line path between Gaussian noise and data:" }], { after: 0.18 });
 {
   const y = cur[1], h = 1.05;
   rect(colX(1), y, CW, h, { fill: { color: TINT } });
@@ -126,34 +129,36 @@ para(1, [{ text: "3.1 Conditional flow matching. ", options: { bold: true } },
   txt("conditioning c: observed IMPACT341 profile", { x: colX(1) + (CW - cw) / 2, y: cur[1], w: cw, h: 0.5, fontSize: 14, color: "FFFFFF", align: "center", valign: "middle" });
   cur[1] += 0.62;
 }
-caption(1, "Figure 2.", "Inference: the learned ODE transports noise to a completed 164-gene profile conditioned on the observed panel.");
-para(1, [{ text: "3.2 Probability read-out. ", options: { bold: true } },
-  { text: "At t = 0 the path is independent of x₁, so the optimal field satisfies v*(x₀, 0 | c) = 𝔼[x₁ | c] − x₀. Marginal alteration probabilities follow from a single evaluation, p̂ = ½(1 + x₀ + v_θ(x₀, 0 | c)), avoiding Monte Carlo ties at ~1% prevalence." }]);
-para(1, [{ text: "3.3 Statistical analysis. ", options: { bold: true } },
-  { text: "Primary endpoint: AUROC on held-out patients, pooled over gene–patient pairs. Secondary: per-gene AUROC (mean over genes with ≥10 events), for which a prevalence-only predictor scores exactly 0.50. Comparators on identical splits: prevalence only; burden + locus (log mutation/CNA counts and copy-number state of the nearest assayed gene); L2-regularised logistic regression. 95% CIs by patient-level bootstrap (200 resamples)." }]);
-para(1, [{ text: "3.4 External replicate. ", options: { bold: true } },
-  { text: "MSK-IMPACT 2017 (cBioPortal, ODbL): IMPACT341 → 69 IMPACT410-only genes in 1,215 NSCLC patients, 3 × 5-fold patient-level cross-validation with fold-stratified AUROC." }]);
+caption(1, "Figure 2.", "Sampling: the learned ODE, integrated from t = 0 to 1 ([solver, N steps]), transports noise to a completed 164-gene profile conditioned on the observed panel.");
+para(1, [{ text: "3.3 Probability read-out. ", options: { bold: true } },
+  { text: "At t = 0 the path is independent of x₁, so the optimal field satisfies v*(x₀, 0 | c) = 𝔼[x₁ | c] − x₀. Per-gene probabilities p̂ = ½(1 + x₀ + vθ(x₀, 0 | c)), averaged over K noise draws, equal the infinite-sample Monte Carlo estimate without its 1/S resolution limit, which at ~1% prevalence ties most pairs at 0. [state read-out used]" }]);
+para(1, [{ text: "3.4 Evaluation. ", options: { bold: true } },
+  { text: "Discrimination: AUROC pooled over gene–patient pairs (primary) and per gene (genes with ≥5 test events), where a prevalence-only predictor scores exactly 0.50. Class imbalance: AUPRC against the prevalence of 0.012. Calibration: Brier skill score and observed:expected ratio. Joint fidelity, the property that justifies a generative model: energy score of sampled profiles versus independent Bernoulli draws from the same marginals. Comparators on identical splits: prevalence; burden + locus (3 burden counts and copy-number state of the nearest assayed gene); L2 logistic regression. 95% CIs and paired differences by patient-level bootstrap." }]);
+para(1, [{ text: "3.5 External replicate. ", options: { bold: true } },
+  { text: "MSK-IMPACT 2017 (cBioPortal, ODbL): IMPACT341 → 69 IMPACT410-only genes in 1,215 NSCLC patients; 3 × 5-fold patient-level cross-validation, AUROC computed within folds." }]);
 
 // ---- column 3
 heading(2, "4  Results");
-para(2, lead("4.1 Primary cohort.", "Across network architectures and training paradigms, the flow model reached a pooled AUROC of 0.77–0.79 on held-out patients, exceeding the prevalence-only baseline in all variants (Table 2)."));
-caption(2, "Table 2.", "Discrimination on the MSK-CHORD test set. AUROC (95% CI).");
+para(2, lead("4.1 Primary cohort.", "Across architectures and training paradigms, the flow model reached a pooled test AUROC of 0.77–0.79, above the prevalence-only baseline in every variant (Table 2)."));
+caption(2, "Table 2.", "MSK-CHORD test set: AUROC pooled and per gene, and AUPRC (chance level = prevalence, 0.012); point estimate (95% CI).");
 cur[2] -= 0.18;
 {
-  const hdr = ["Model", "Pooled", "Per gene"].map((t, i) => ({ text: t, options: { bold: true, align: i ? "right" : "left" } }));
-  const r = (a, b, c, bold) => [{ text: a, options: { bold } }, { text: b, options: { align: "right", bold, color: b.includes("[") ? PH : INK } },
-    { text: c, options: { align: "right", bold, color: c.includes("[") ? PH : INK } }];
-  const rows = [hdr, r("Prevalence only", "[ ]", "0.50"), r("Burden + locus", "[ ]", "[ ]"), r("L2 logistic regression", "[ ]", "[ ]"),
-    r("Flow matching", "0.77–0.79", "[ ]", true)];
+  const hdr = ["Model", "Pooled", "Per gene", "AUPRC"].map((t, i) => ({ text: t, options: { bold: true, align: i ? "right" : "left" } }));
+  const cell = (v, bold) => ({ text: v, options: { align: "right", bold, color: v.includes("[") ? PH : INK } });
+  const r = (a, b, c, d, bold) => [{ text: a, options: { bold } }, cell(b, bold), cell(c, bold), cell(d, bold)];
+  const rows = [hdr, r("Prevalence only", "[ ]", "0.50", "[ ]"), r("Burden + locus", "[ ]", "[ ]", "[ ]"), r("L2 logistic regression", "[ ]", "[ ]", "[ ]"),
+    r("Flow matching", "0.77–0.79", "[ ]", "[ ]", true)];
   const rowH = 0.46;
-  s.addTable(rows, { x: colX(2), y: cur[2], w: CW, colW: [CW * 0.5, CW * 0.25, CW * 0.25], fontFace: BODY, fontSize: 16, color: INK, rowH,
+  s.addTable(rows, { x: colX(2), y: cur[2], w: CW, colW: [CW * 0.4, CW * 0.2, CW * 0.22, CW * 0.18], fontFace: BODY, fontSize: 15, color: INK, rowH,
     margin: [0.05, 0, 0.05, 0], border: { type: "solid", pt: 0.75, color: RULE } });
   hline(colX(2), cur[2], CW, INK, 1.5);
   hline(colX(2), cur[2] + rowH, CW, INK, 1.25);
   hline(colX(2), cur[2] + rowH * rows.length, CW, INK, 1.5);
-  cur[2] += rowH * rows.length + 0.35;
+  cur[2] += rowH * rows.length + 0.25;
 }
-para(2, lead("4.2 Benchmark on public data.", "In the replicate, gene frequency alone yields a pooled AUROC of 0.715; per-gene AUROC isolates patient-specific information (Figure 3)."));
+para(2, [{ text: "Calibration and joint fidelity: ", options: { bold: true } }, { text: "Brier skill " }, { text: "[ ]", options: { color: PH } },
+  { text: "; energy score, flow samples vs independent draws " }, { text: "[ ] vs [ ]", options: { color: PH } }, { text: "." }], { after: 0.3 });
+para(2, lead("4.2 Benchmark on public data.", "Pooled AUROC compares pairs across genes, so ranking genes by training frequency alone scores 0.715. Per gene, a 7-feature model matches 1,026-feature logistic regression (0.760 vs 0.728), and pan-cancer training adds +0.039 (95% CI 0.024–0.057; Figure 3)."));
 {
   // dot plot with 95% CI; axis 0.45-0.90
   const labW = 2.45, px0 = colX(2) + labW, pw = CW - labW - 0.15;
@@ -191,7 +196,7 @@ caption(2, "Figure 3.", "Replicate (n = 1,215): AUROC with patient-bootstrap 95%
 // ---- column 4
 hline(colX(3), cur[3], CW, INK, 2.25);
 cur[3] += 0.15;
-para(3, lead("4.3 Sources of signal.", "Amplifications were recovered almost completely through co-amplification with neighbouring assayed genes (e.g. NFKBIA with NKX2-1 in 39/39 cases); mutation prediction matched a model using only three burden counts (Figure 4)."));
+para(3, lead("4.3 Sources of signal.", "Amplifications were highly discriminable (AUROC 0.95), explained largely by co-amplification with neighbouring assayed genes (NFKBIA with NKX2-1 in 39/39 cases). Mutations reached 0.73, no better than three mutational-burden counts alone (Figure 4)."));
 function bars(c, labels, values, colors, h) {
   s.addChart(pres.charts.BAR, [{ name: "AUROC", labels, values }], {
     x: colX(c), y: cur[c], w: CW, h, barDir: "bar", chartColors: colors, catAxisOrientation: "maxMin",
@@ -204,18 +209,18 @@ function bars(c, labels, values, colors, h) {
   cur[c] += h + 0.08;
 }
 bars(3, ["Amplifications (134 events)", "Mutations (646 events)", "Mutations, burden only", "Deep deletions (18 events)"],
-  [0.949, 0.728, 0.726, 0.711], [BLUE, BLUE, LIGHT_BLUE, BLUE], 2.6);
+  [0.949, 0.728, 0.726, 0.711], [BLUE, BLUE, LIGHT_BLUE, BLUE], 2.25);
 caption(3, "Figure 4.", "Replicate: per-gene AUROC by event type (positives-weighted mean; axis origin 0.50), pan-cancer logistic regression.");
-para(3, lead("4.4 Simulated versus real input.", "In 167 patients sequenced on both panels, input from the separate IMPACT341 assay reduced discrimination relative to the masked large panel (Figure 5)."));
+para(3, lead("4.4 Simulated versus real input.", "In 167 patients sequenced on both panels, taking the input from the separate IMPACT341 assay rather than masking the IMPACT410 sample lowered AUROC. The paired samples also differ in specimen and time, so the gap combines assay shift and tumour heterogeneity (Figure 5)."));
 bars(3, ["Masked panel, pooled", "Real assay, pooled", "Masked panel, per gene", "Real assay, per gene"],
-  [0.84, 0.70, 0.80, 0.61], [BLUE, ORANGE, BLUE, ORANGE], 2.6);
-caption(3, "Figure 5.", "Replicate: AUROC with simulated (masked IMPACT410) versus real (IMPACT341 assay) input; axis origin 0.50.");
+  [0.84, 0.70, 0.80, 0.61], [BLUE, ORANGE, BLUE, ORANGE], 2.25);
+caption(3, "Figure 5.", "Replicate, pan-cancer logistic regression trained on all other patients: simulated (masked IMPACT410) versus real (IMPACT341 assay) input; axis origin 0.50.");
 heading(3, "5  Discussion");
 {
-  const items = ["A targeted panel contains recoverable information on genes outside its assayed set (pooled AUROC 0.77–0.79).",
-    "This information derives mainly from copy-number co-location and mutational burden.",
-    "Limitations: simulated masking overestimates performance on real assays; single test split; actionable-gene subset not yet evaluated.",
-    "Such models may prioritise patients for broad CGP; they do not replace it."];
+  const items = ["A targeted panel carries predictive information on unassayed genes; per-gene AUROC and simple baselines, not pooled AUROC alone, measure how much.",
+    "The signal is mainly copy-number co-location and mutational burden; a generative model must add joint fidelity to justify its complexity.",
+    "Limitations: masked-panel evaluation is an upper bound; single split; actionable-gene subset not yet evaluated.",
+    "At ~1% prevalence, use is triage for broad CGP, not replacement."];
   const runs = items.map((t, i) => {
     const o = { bullet: true, paraSpaceAfter: 6 };
     if (i < items.length - 1) o.breakLine = true;
