@@ -38,12 +38,13 @@ const COLS = 4, GAP = 0.57, CW = (W - 2 * M - GAP * (COLS - 1)) / COLS;
 const colX = (i) => M + i * (CW + GAP);
 const Y0 = TOP + headH + 0.4, FOOT_Y = H - 1.6;
 const cur = [Y0, Y0, Y0, Y0];
-const BODY_PT = 16.5, CAP_PT = 13.5;
+const BODY_PT = Number(process.env.BPT || 15.5), CAP_PT = 13;
+const PAD = (process.env.PAD || "0.21,0,0.08,0.06").split(",").map(Number);
 // rough height estimate for wrapped Calibri text (in)
 const est = (str, pt, w) => {
-  const perLine = Math.floor(w / (pt * 0.53 / 72));
+  const perLine = Math.floor(w / (pt * 0.515 / 72));
   const lines = str.split("\n").reduce((n, l) => n + Math.max(1, Math.ceil(l.length / perLine)), 0);
-  return lines * pt * 1.25 / 72 + 0.04;
+  return lines * pt * 1.23 / 72 + 0.04;
 };
 const plain = (runs) => typeof runs === "string" ? runs : runs.map((r) => r.text).join("");
 
@@ -52,6 +53,7 @@ function heading(c, label) {
   txt(label, { x: colX(c), y: cur[c] + 0.1, w: CW, h: 0.62, fontFace: HEAD, fontSize: 32, bold: true });
   cur[c] += 0.95;
 }
+const gap = (c, k = 1) => { cur[c] += PAD[c] * k; };
 function para(c, runs, o = {}) {
   const pt = o.fontSize || BODY_PT;
   const h = est(plain(runs), pt, CW);
@@ -68,6 +70,7 @@ para(0, [{ text: "EBAI class B. ", options: { bold: true } }, { text: "Under the
   { text: "enrich", options: { bold: true } }, { text: " a population for confirmatory testing, or, where a negative result reliably excludes the alteration, to " },
   { text: "rule out", options: { bold: true } }, { text: " testing. They do not substitute an established genomic test." }]);
 para(0, lead("Objective.", "To learn the conditional distribution of alterations in genes absent from a targeted panel given the genes it measures, benchmark it against simple baselines, and evaluate it along the seven EBAI dimensions: comparator, performance, generalisability, fairness, explainability, cost and turnaround time."), { after: 0.35 });
+gap(0);
 heading(0, "2  Study design");
 {
   const y = cur[0], h = 0.62, w1 = CW * 0.675;
@@ -78,12 +81,13 @@ heading(0, "2  Study design");
   cur[0] += h + 0.12;
 }
 caption(0, "Figure 1.", "Task definition. IMPACT341 ⊂ IMPACT505; the 164 genes present only in IMPACT505 are masked from the input and predicted.");
+gap(0);
 caption(0, "Table 1.", "Cohort and target characteristics (MSK-CHORD).");
 cur[0] -= 0.18;
 {
   const rows = [["Patients, NSCLC, sequenced on IMPACT505", "2,226"], ["Input genes (IMPACT341)", "341"],
     ["Target genes (IMPACT505 \\ IMPACT341)", "164"], ["Altered target gene–patient pairs", "1.21%"],
-    ["Patients with ≥1 altered target gene", "[ ]%"], ["Split (patient level): train / val / test", "70 / 15 / 15% [confirm]"]];
+    ["Test-set patients", "≈334"], ["Split (patient level): train / val / test", "70 / 15 / 15%*"]];
   const tbl = rows.map(([a, b]) => [{ text: a }, { text: b, options: { align: "right", color: b.includes("[") ? PH : INK } }]);
   const rowH = 0.42;
   s.addTable(tbl, { x: colX(0), y: cur[0], w: CW, colW: [CW * 0.62, CW * 0.38], fontFace: BODY, fontSize: 16, color: INK, rowH, margin: [0.04, 0, 0.04, 0],
@@ -92,7 +96,9 @@ cur[0] -= 0.18;
   hline(colX(0), cur[0] + rowH * rows.length, CW, INK, 1.5);
   cur[0] += rowH * rows.length + 0.3;
 }
-para(0, lead("Alteration encoding.", "Target: one binary event per gene and patient (non-synonymous mutation, amplification or deep deletion; [state VUS and structural-variant handling]). Input: separate mutation, amplification and deletion indicators for the 341 assayed genes. One sample per patient. Genes not covered by a sample's panel are treated as missing, never as wild type."));
+gap(0);
+caption(0, "*", "The abstract reports 75 / 15 / 15%, which sums to 105%; 70 / 15 / 15% is assumed here.");
+para(0, lead("Alteration encoding.", "Target: one binary event per gene and patient (any non-synonymous mutation, including variants of unknown significance, amplification or deep deletion; fusions and other structural variants not modelled). Input: separate mutation, amplification and deletion indicators for the 341 assayed genes. One sample per patient. Genes not covered by a sample's panel are treated as missing, never as wild type."));
 
 // ---- column 2
 heading(1, "3  Methods");
@@ -103,7 +109,7 @@ para(1, [{ text: "3.1 Problem formulation. ", options: { bold: true } },
   { text: " (continuous relaxation); generated profiles are binarised by sign. Data were split by patient into 70% training, 15% validation (all model and hyper-parameter selection) and 15% test, evaluated once." }]);
 para(1, [{ text: "3.2 Conditional flow matching. ", options: { bold: true } },
   { text: "A velocity field v" }, { text: "θ", options: { subscript: true } },
-  { text: " ([architecture]) is regressed onto the straight-line path between Gaussian noise and data:" }], { after: 0.18 });
+  { text: ", a neural network (architecture variants compared on the validation set), is regressed onto the straight-line path between Gaussian noise and data:" }], { after: 0.18 });
 {
   const y = cur[1], h = 1.05;
   rect(colX(1), y, CW, h, { fill: { color: TINT } });
@@ -132,36 +138,43 @@ para(1, [{ text: "3.2 Conditional flow matching. ", options: { bold: true } },
   txt("conditioning c: observed IMPACT341 profile", { x: colX(1) + (CW - cw) / 2, y: cur[1], w: cw, h: 0.5, fontSize: 14, color: "FFFFFF", align: "center", valign: "middle" });
   cur[1] += 0.62;
 }
-caption(1, "Figure 2.", "Sampling: the learned ODE, integrated from t = 0 to 1 ([solver, N steps]), transports noise to a completed 164-gene profile conditioned on the observed panel.");
+caption(1, "Figure 2.", "Sampling: the learned ODE, integrated numerically from t = 0 to 1, transports noise to a completed 164-gene profile conditioned on the observed panel.");
+gap(1);
 para(1, [{ text: "3.3 Probability read-out. ", options: { bold: true } },
-  { text: "At t = 0, xₜ is independent of x₁, so v*(x₀, 0 | c) = 𝔼[x₁ | c] − x₀ and p̂ = ½(1 + x₀ + vθ(x₀, 0 | c)), averaged over K noise draws. This avoids Monte Carlo ties at ~1% prevalence. [state read-out used]" }]);
+  { text: "At t = 0, xₜ is independent of x₁, so v*(x₀, 0 | c) = 𝔼[x₁ | c] − x₀ and p̂ = ½(1 + x₀ + vθ(x₀, 0 | c)), averaged over K noise draws. This avoids the Monte Carlo ties that sample frequencies produce at ~1% prevalence." }]);
+gap(1);
 para(1, [{ text: "3.4 Evaluation (EBAI). ", options: { bold: true } },
-  { text: "Pre-specified primary endpoint: pooled AUROC. Secondary: per-gene AUROC (genes with ≥5 test events; prevalence-only = 0.50); AUPRC (chance = 0.012); calibration plot, slope, intercept, O:E and Brier skill; at the intended-use threshold for ≥1 altered target gene, sensitivity, specificity, PPV, NPV and LR±; NRI over the burden + locus model and decision-curve analysis; joint fidelity (energy score versus independent Bernoulli draws). Comparators on identical splits: prevalence, burden + locus, L2 logistic regression. 95% CIs and paired differences by patient bootstrap. " },
+  { text: "Pre-specified primary endpoint: pooled AUROC. Secondary: per-gene AUROC (genes with ≥5 test events; prevalence-only = 0.50); AUPRC (chance = 0.012); calibration plot, slope, intercept, O:E and Brier skill; at the intended-use threshold for ≥1 altered target gene, sensitivity, specificity, PPV, NPV and LR±; NRI over the burden + locus model and decision-curve analysis; joint fidelity (energy score versus independent Bernoulli draws). Comparators (same splits): prevalence, burden + locus, L2 logistic regression; 95% CIs and paired differences by patient bootstrap. " },
   { text: "Sample size (post hoc; EBAI asks a priori): ", options: { bold: true } }, { text: "~334 test patients give a 95% CI half-width of ≈ ±0.05 for a patient-level AUROC of 0.79 (Hanley–McNeil, 43% prevalence assumed)." }]);
+gap(1);
 para(1, [{ text: "3.5 External replicate. ", options: { bold: true } },
-  { text: "MSK-IMPACT 2017 (cBioPortal, ODbL): IMPACT341 → 69 IMPACT410-only genes in 1,215 NSCLC patients; 3 × 5-fold patient-level cross-validation, AUROC computed within folds." }]);
+  { text: "MSK-IMPACT 2017 (cBioPortal): IMPACT341 → 69 IMPACT410-only genes, 1,215 NSCLC patients, 3 × 5-fold patient-level CV, AUROC within folds." }]);
 
 // ---- column 3
-heading(2, "4  Results");
-para(2, lead("4.1 Primary cohort.", "Across architectures and training paradigms, the flow model reached a pooled test AUROC of 0.77–0.79, above the prevalence-only baseline in every variant (Table 2)."));
-caption(2, "Table 2.", "MSK-CHORD test set: AUROC pooled and per gene, and AUPRC (chance level = prevalence, 0.012); point estimate (95% CI).");
+gap(1);
+heading(1, "4  Results");
+para(1, lead("4.1 Primary cohort.", "Across architectures and training paradigms, the flow model reached a pooled test AUROC of 0.77–0.79, above the prevalence-only baseline in every variant. The abstract reports no other metric; Table 2 sets these gaps against what the replicate measures."));
+hline(colX(2), cur[2], CW, INK, 2.25);
+cur[2] += 0.15;
+caption(2, "Table 2.", "Metrics reported for the MSK-CHORD flow model versus those measured in the replicate (L2 logistic regression, 3 × 5-fold CV; 95% CI). n.r., not reported.");
 cur[2] -= 0.18;
 {
-  const hdr = ["Model", "Pooled", "Per gene", "AUPRC"].map((t, i) => ({ text: t, options: { bold: true, align: i ? "right" : "left" } }));
-  const cell = (v, bold) => ({ text: v, options: { align: "right", bold, color: v.includes("[") ? PH : INK } });
-  const r = (a, b, c, d, bold) => [{ text: a, options: { bold } }, cell(b, bold), cell(c, bold), cell(d, bold)];
-  const rows = [hdr, r("Prevalence only", "[ ]", "0.50", "[ ]"), r("Burden + locus", "[ ]", "[ ]", "[ ]"), r("L2 logistic regression", "[ ]", "[ ]", "[ ]"),
-    r("Flow matching", "0.77–0.79", "[ ]", "[ ]", true)];
-  const rowH = 0.46;
-  s.addTable(rows, { x: colX(2), y: cur[2], w: CW, colW: [CW * 0.4, CW * 0.2, CW * 0.22, CW * 0.18], fontFace: BODY, fontSize: 15, color: INK, rowH,
-    margin: [0.05, 0, 0.05, 0], border: { type: "solid", pt: 0.75, color: RULE } });
+  const hdr = ["Metric (EBAI)", "MSK-CHORD", "Replicate"].map((t, i) => ({ text: t, options: { bold: true, align: i ? "right" : "left" } }));
+  const nr = { text: "n.r.", options: { align: "right", color: MUTED, italic: true } };
+  const r = (a, b, c) => [{ text: a }, b === "n.r." ? nr : { text: b, options: { align: "right", bold: true } }, { text: c, options: { align: "right" } }];
+  const rows = [hdr, r("Pooled AUROC", "0.77–0.79", "0.778 (0.754–0.796)"), r("Per-gene AUROC", "n.r.", "0.728 (0.705–0.753)"),
+    r("AUPRC (chance ≈ 0.011)", "n.r.", "0.114"), r("Calibration slope · O:E", "n.r.", "0.97 · 1.08"), r("Brier skill vs prevalence", "n.r.", "0.042"),
+    r("NPV at 90% sensitivity*", "n.r.", "0.86 (LR− 0.22)"), r("Joint fidelity (energy score)", "n.r.", "not applicable")];
+  const rowH = 0.34;
+  s.addTable(rows, { x: colX(2), y: cur[2], w: CW, colW: [CW * 0.44, CW * 0.2, CW * 0.36], fontFace: BODY, fontSize: 14, color: INK, rowH,
+    margin: [0.04, 0, 0.04, 0], border: { type: "solid", pt: 0.75, color: RULE } });
   hline(colX(2), cur[2], CW, INK, 1.5);
   hline(colX(2), cur[2] + rowH, CW, INK, 1.25);
   hline(colX(2), cur[2] + rowH * rows.length, CW, INK, 1.5);
-  cur[2] += rowH * rows.length + 0.25;
+  cur[2] += rowH * rows.length + 0.1;
 }
-para(2, [{ text: "Calibration and joint fidelity: ", options: { bold: true } }, { text: "Brier skill " }, { text: "[ ]", options: { color: PH } },
-  { text: "; energy score, flow samples vs independent draws " }, { text: "[ ] vs [ ]", options: { color: PH } }, { text: "." }], { after: 0.3 });
+caption(2, "*", "Patient level: ≥1 altered target gene (prevalence 43%).");
+gap(2);
 para(2, lead("4.2 Benchmark on public data.", "Pooled AUROC compares pairs across genes, so ranking genes by training frequency alone scores 0.715. Per gene, a 7-feature model matches 1,026-feature logistic regression (0.760 vs 0.728), and pan-cancer training adds +0.039 (95% CI 0.024–0.057; Figure 3)."));
 {
   // dot plot with 95% CI; axis 0.45-0.90
@@ -176,10 +189,10 @@ para(2, lead("4.2 Benchmark on public data.", "Pooled AUROC compares pairs acros
   y += 0.45;
   const rows = [["Prevalence only", 0.715, 0.691, 0.735, 0.500, null, null], ["Burden + locus", 0.760, 0.735, 0.779, 0.760, 0.736, 0.785],
     ["L2 logistic regression", 0.778, 0.754, 0.796, 0.728, 0.705, 0.753], ["Pan-cancer logistic", 0.808, 0.791, 0.829, 0.767, 0.741, 0.790]];
-  const rh = 0.74;
+  const rh = 0.52;
   for (const [lab, p, plo, phi, g, glo, ghi] of rows) {
-    txt(lab, { x: colX(2), y, w: labW, h: rh, fontSize: 16, valign: "middle" });
-    const yp = y + 0.22, yg = y + 0.52;
+    txt(lab, { x: colX(2), y, w: labW, h: rh, fontSize: 15, valign: "middle" });
+    const yp = y + 0.15, yg = y + 0.37;
     hline(X(plo), yp, X(phi) - X(plo), BLUE, 2);
     s.addShape(pres.shapes.OVAL, { x: X(p) - 0.085, y: yp - 0.085, w: 0.17, h: 0.17, fill: { color: BLUE } });
     txt(p.toFixed(3), { x: X(phi) + 0.06, y: yp - 0.12, w: 0.7, h: 0.24, fontSize: 11.5 });
@@ -198,40 +211,41 @@ para(2, lead("4.2 Benchmark on public data.", "Pooled AUROC compares pairs acros
 caption(2, "Figure 3.", "Replicate (n = 1,215): AUROC with patient-bootstrap 95% CI. Pan-cancer: trained on 7,773 patients with cancer type as covariate.");
 
 para(2, lead("4.3 Simulated versus real input.", "In 167 patients sequenced on both panels, taking the input from the separate IMPACT341 assay instead of masking the IMPACT410 sample lowered pooled AUROC from 0.84 to 0.70 and per-gene AUROC from 0.80 to 0.61 (pan-cancer logistic regression). The paired samples also differ in specimen and time, so the gap combines assay shift and tumour heterogeneity."), { after: 0.3 });
-// ---- column 4
-hline(colX(3), cur[3], CW, INK, 2.25);
-cur[3] += 0.15;
-para(3, lead("4.4 Sources of signal.", "Amplifications were highly discriminable (AUROC 0.95), explained largely by co-amplification with neighbouring assayed genes (NFKBIA with NKX2-1 in 39/39 cases). Mutations reached 0.73, no better than three mutational-burden counts alone (Figure 4)."));
+gap(2);
+para(2, lead("4.4 Sources of signal.", "Amplifications were highly discriminable (AUROC 0.95), explained largely by co-amplification with neighbouring assayed genes (NFKBIA with NKX2-1 in 39/39 cases). Mutations reached 0.73, no better than three mutational-burden counts alone (Figure 4)."));
 function bars(c, labels, values, colors, h) {
   s.addChart(pres.charts.BAR, [{ name: "AUROC", labels, values }], {
     x: colX(c), y: cur[c], w: CW, h, barDir: "bar", chartColors: colors, catAxisOrientation: "maxMin",
     valAxisMinVal: 0.5, valAxisMaxVal: 1.0, valAxisMajorUnit: 0.1, valAxisLabelFormatCode: "0.0#", showValue: true,
-    dataLabelPosition: "outEnd", dataLabelFormatCode: "0.00", dataLabelFontSize: 15, dataLabelColor: INK,
-    catAxisLabelFontSize: 15, valAxisLabelFontSize: 12, catAxisLabelColor: INK, valAxisLabelColor: MUTED,
+    dataLabelPosition: "outEnd", dataLabelFormatCode: "0.00", dataLabelFontSize: 13, dataLabelColor: INK,
+    catAxisLabelFontSize: 13, valAxisLabelFontSize: 12, catAxisLabelColor: INK, valAxisLabelColor: MUTED,
     catAxisLabelFontFace: BODY, valAxisLabelFontFace: BODY, valGridLine: { color: "E0E4E8", size: 0.75 }, catGridLine: { style: "none" },
     showLegend: false, barGapWidthPct: 45,
   });
   cur[c] += h + 0.08;
 }
-bars(3, ["Amplifications (134 events)", "Mutations (646 events)", "Mutations, burden only", "Deep deletions (18 events)"],
-  [0.949, 0.728, 0.726, 0.711], [BLUE, BLUE, LIGHT_BLUE, BLUE], 1.85);
-caption(3, "Figure 4.", "Replicate: per-gene AUROC by event type (positives-weighted mean; axis origin 0.50), pan-cancer logistic regression.");
+bars(2, ["Amplifications (134 events)", "Mutations (646 events)", "Mutations, burden only", "Deep deletions (18 events)"],
+  [0.949, 0.728, 0.726, 0.711], [BLUE, BLUE, LIGHT_BLUE, BLUE], 1.6);
+caption(2, "Figure 4.", "Replicate: per-gene AUROC by event type (positives-weighted mean; axis origin 0.50), pan-cancer logistic regression.");
+gap(2);
+// ---- column 4
 heading(3, "5  EBAI assessment");
+gap(3, 0.5);
 {
   const groups = [
     ["Essential", [
       ["Comparator", "met", "IMPACT505 NGS on the same sample"],
-      ["Discrimination", "met", "Pooled AUROC 0.77–0.79; per gene [ ]"],
+      ["Discrimination", "partial", "Pooled AUROC 0.77–0.79; per gene n.r."],
       ["Operating point", "partial", "Replicate: Se 0.90, NPV 0.86, LR− 0.22"],
-      ["Calibration", "partial", "Replicate: slope 0.97, O:E 1.08; plot [ ]"],
+      ["Calibration", "partial", "Replicate: slope 0.97, O:E 1.08"],
       ["Indep. cohort", "open", "Single institution; external cohort needed"],
       ["Assay variation", "partial", "Real IMPACT341 input: AUROC 0.84 → 0.70"]]],
     ["Recommended", [
       ["Fairness", "open", "Sex, ancestry, smoking, histology"],
       ["Explainability", "met", "Ablation: CN locus + mutational burden"]]],
     ["Additional", [
-      ["Cost", "partial", "Reuses routine panel data; cost analysis [ ]"],
-      ["Turnaround", "partial", "Inference in seconds; end-to-end time [ ]"]]],
+      ["Cost", "partial", "Reuses routine panel data; not costed"],
+      ["Turnaround", "partial", "Inference in seconds; workflow not timed"]]],
     ["Validation", [
       ["Sample size", "partial", "Post hoc: ≈ ±0.05 AUROC with 334 test patients"],
       ["NRI / DCA", "open", "Versus burden + locus model; triage threshold"]]],
@@ -260,19 +274,38 @@ heading(3, "5  EBAI assessment");
   }
   cur[3] = y + 0.1;
 }
-caption(3, "Figure 5.", "Assessment along the seven EBAI dimensions and validation requirements for class B. Replicate values from MSK-IMPACT 2017; [ ] to compute on MSK-CHORD. CN, copy number; DCA, decision-curve analysis; NRI, net reclassification improvement.");
-heading(3, "6  Discussion");
-{
-  const items = ["A targeted panel predicts part of the unassayed genome; per-gene AUROC and simple baselines, not pooled AUROC alone, show how much.",
-    "The signal is copy-number co-location and mutational burden; a generative model must add joint fidelity to justify its complexity.",
-    "EBAI class B: NPV 0.86 at 90% sensitivity does not support rule-out; use is enrichment, with confirmatory CGP.",
-    "Next: independent multi-centre validation, fairness audit, DCA and post-deployment drift monitoring."];
+caption(3, "Figure 5.", "Assessment along the seven EBAI dimensions and validation requirements for class B. Replicate values from MSK-IMPACT 2017; n.r., not reported. CN, copy number; DCA, decision-curve analysis; NRI, net reclassification improvement.");
+gap(3, 0.5);
+heading(3, "6  Limitations");
+gap(3, 0.3);
+function bullets(c, items, pt) {
   const runs = items.map((t, i) => {
-    const o = { bullet: true, paraSpaceAfter: 6 };
-    if (i < items.length - 1) o.breakLine = true;
-    return [{ text: t, options: o }];
+    const [h, rest] = t.split("|");
+    const o = { bullet: true, paraSpaceAfter: 4 };
+    const last = i === items.length - 1;
+    return [{ text: h, options: Object.assign({ bold: true }, o) }, { text: rest, options: last ? {} : { breakLine: true } }];
   }).flat();
-  const h = items.reduce((a, t) => a + est(t, BODY_PT, CW - 0.3), 0) + 0.3;
+  const h = items.reduce((a, t) => a + est(t.replace("|", ""), pt, CW - 0.3), 0) + 0.05 * items.length;
+  txt(runs, { x: colX(c), y: cur[c], w: CW, h, fontSize: pt });
+  cur[c] += h + 0.15;
+}
+para(3, [{ text: "Abstract", options: { bold: true, color: MUTED } }], { fontSize: 14, after: 0.05 });
+bullets(3, ["Evaluation. |Single 15% test split; pooled AUROC without CI, per-gene AUROC, AUPRC or calibration; split stated as 75/15/15%.",
+  "Validity. |Simulated masking of one IMPACT505 assay; single institution, no independent or real paired-assay cohort.",
+  "Scope. |Binary per-gene events ignore variant level (e.g. KRAS G12C) and fusions; actionable genes and subgroups not analysed.",
+  "Generative claim. |No joint-fidelity metric; architecture variants unspecified."], BODY_PT);
+para(3, [{ text: "Poster and replicate", options: { bold: true, color: MUTED } }], { fontSize: 14, after: 0.05 });
+bullets(3, ["Replicate. |69 genes, 2014–2016 MSK data: not independent of MSK-CHORD under EBAI.",
+  "Models. |Operating point and calibration from L2 logistic regression, not the flow model; sample size post hoc."], BODY_PT);
+gap(3, 0.5);
+heading(3, "7  Conclusions");
+gap(3, 0.3);
+{
+  const items = ["A targeted panel predicts part of the unassayed genome, mainly through copy-number co-location and mutational burden.",
+    "As an EBAI class B biomarker its use is enrichment for confirmatory CGP, not rule-out (replicate NPV 0.86).",
+    "Next: per-gene and calibration metrics, an independent multi-centre cohort and a fairness audit."];
+  const runs = items.map((t, i) => ({ text: t, options: Object.assign({ bullet: true, paraSpaceAfter: 4 }, i < items.length - 1 ? { breakLine: true } : {}) }));
+  const h = items.reduce((a, t) => a + est(t, BODY_PT, CW - 0.3), 0) + 0.15;
   txt(runs, { x: colX(3), y: cur[3], w: CW, h, fontSize: BODY_PT });
   cur[3] += h;
 }
@@ -288,13 +321,12 @@ txt([{ text: "References", options: { bold: true, breakLine: true } },
   { text: "3. Lipman Y, et al. Flow matching for generative modeling. ICLR 2023.   4. Collins GS, et al. TRIPOD+AI statement. BMJ 2024;385:e078378.", options: { breakLine: true } },
   { text: "5. Aldea M, et al. ESMO basic requirements for AI-based biomarkers in oncology (EBAI). Ann Oncol 2026;37:414–25." }],
   { x: fx[0], y: fy, w: fw * 0.5, h: 1.3, fontSize: fs, color: "2C3A47" });
-txt([{ text: "Data and code", options: { bold: true, breakLine: true } }, { text: "MSK-CHORD and msk_impact_2017 via cBioPortal. Code: " }, { text: "[repository link]", options: { color: PH } }],
+txt([{ text: "Data and code", options: { bold: true, breakLine: true } }, { text: "MSK-CHORD and msk_impact_2017 via cBioPortal. Code: github.com/chiaralouisa/brainmets-POP (QR)" }],
   { x: fx[1], y: fy, w: fw * 0.25, h: 1.3, fontSize: fs, color: "2C3A47" });
-txt([{ text: "Disclosures · Contact", options: { bold: true, breakLine: true } }, { text: "[Conflict-of-interest statement]", options: { color: PH, breakLine: true } },
-  { text: "[Corresponding author e-mail]", options: { color: PH } }],
+txt([{ text: "Disclosures · Contact", options: { bold: true, breakLine: true } }, { text: "The authors declare no conflicts of interest.", options: { breakLine: true } },
+  { text: "Louisa Hempel · louisa.hempel@googlemail.com" }],
   { x: fx[2], y: fy, w: fw * 0.25, h: 1.3, fontSize: fs, color: "2C3A47" });
-rect(W - M - qr, fy, qr, qr, { fill: { color: "FFFFFF" }, line: { color: "6B7682", width: 1.25, dashType: "dash" } });
-txt("[QR code]", { x: W - M - qr, y: fy, w: qr, h: qr, fontSize: 12, color: MUTED, align: "center", valign: "middle" });
+s.addImage({ path: "qr.png", x: W - M - qr, y: fy, w: qr, h: qr, altText: "QR code: github.com/chiaralouisa/brainmets-POP" });
 
 console.log("column bottoms (in):", cur.map((v) => v.toFixed(2)), "footer at", FOOT_Y.toFixed(2));
 pres.writeFile({ fileName: "ESMO_P305_poster.pptx" }).then((f) => console.log("wrote", f));
