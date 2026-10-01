@@ -62,9 +62,12 @@ const caption = (c, label, rest) => para(c, [{ text: label + " ", options: { bol
 const lead = (label, rest) => [{ text: label + " ", options: { bold: true } }, { text: rest }];
 
 // ---- column 1
-heading(0, "1  Introduction");
-para(0, "Comprehensive genomic profiling (CGP) underpins treatment selection in NSCLC, yet panel content varies widely across institutions and health-care systems. Smaller targeted panels reduce cost and turnaround time but leave part of the tumour genome unmeasured.");
-para(0, lead("Objective.", "To learn the conditional distribution of alterations in genes absent from a targeted panel given the genes it measures, to benchmark it against simple statistical baselines, and to identify which signals make the missing genes predictable."), { after: 0.35 });
+heading(0, "1  Background");
+para(0, "Comprehensive genomic profiling (CGP) guides treatment in NSCLC, but panel content, cost and turnaround time differ widely between institutions, and smaller targeted panels leave part of the tumour genome unmeasured.");
+para(0, [{ text: "EBAI class B. ", options: { bold: true } }, { text: "Under the ESMO basic requirements for AI-based biomarkers (EBAI), a model that predicts an established biomarker from an input different from the gold-standard test is class B; here the input is the smaller panel itself. Because the input differs from the reference test, risk and complexity exceed class A. Such tools may predict only a subset of alterations with sufficient sensitivity and specificity, and usually aim to " },
+  { text: "enrich", options: { bold: true } }, { text: " a population for confirmatory testing, or, where a negative result reliably excludes the alteration, to " },
+  { text: "rule out", options: { bold: true } }, { text: " testing. They do not substitute an established genomic test." }]);
+para(0, lead("Objective.", "To learn the conditional distribution of alterations in genes absent from a targeted panel given the genes it measures, benchmark it against simple baselines, and evaluate it along the seven EBAI dimensions: comparator, performance, generalisability, fairness, explainability, cost and turnaround time."), { after: 0.35 });
 heading(0, "2  Study design");
 {
   const y = cur[0], h = 0.62, w1 = CW * 0.675;
@@ -131,9 +134,10 @@ para(1, [{ text: "3.2 Conditional flow matching. ", options: { bold: true } },
 }
 caption(1, "Figure 2.", "Sampling: the learned ODE, integrated from t = 0 to 1 ([solver, N steps]), transports noise to a completed 164-gene profile conditioned on the observed panel.");
 para(1, [{ text: "3.3 Probability read-out. ", options: { bold: true } },
-  { text: "At t = 0 the path is independent of x₁, so the optimal field satisfies v*(x₀, 0 | c) = 𝔼[x₁ | c] − x₀. Per-gene probabilities p̂ = ½(1 + x₀ + vθ(x₀, 0 | c)), averaged over K noise draws, equal the infinite-sample Monte Carlo estimate without its 1/S resolution limit, which at ~1% prevalence ties most pairs at 0. [state read-out used]" }]);
-para(1, [{ text: "3.4 Evaluation. ", options: { bold: true } },
-  { text: "Discrimination: AUROC pooled over gene–patient pairs (primary) and per gene (genes with ≥5 test events), where a prevalence-only predictor scores exactly 0.50. Class imbalance: AUPRC against the prevalence of 0.012. Calibration: slope, intercept, observed:expected (O:E) ratio and Brier skill score. Intended-use operating point (EBAI class B): sensitivity, specificity, PPV, NPV and LR± for ≥1 altered target gene. Joint fidelity, the property that justifies a generative model: energy score of sampled profiles versus independent Bernoulli draws from the same marginals. Comparators on identical splits: prevalence; burden + locus (3 burden counts and copy-number state of the nearest assayed gene); L2 logistic regression. 95% CIs and paired differences by patient-level bootstrap." }]);
+  { text: "At t = 0, xₜ is independent of x₁, so v*(x₀, 0 | c) = 𝔼[x₁ | c] − x₀ and p̂ = ½(1 + x₀ + vθ(x₀, 0 | c)), averaged over K noise draws. This avoids Monte Carlo ties at ~1% prevalence. [state read-out used]" }]);
+para(1, [{ text: "3.4 Evaluation (EBAI). ", options: { bold: true } },
+  { text: "Pre-specified primary endpoint: pooled AUROC. Secondary: per-gene AUROC (genes with ≥5 test events; prevalence-only = 0.50); AUPRC (chance = 0.012); calibration plot, slope, intercept, O:E and Brier skill; at the intended-use threshold for ≥1 altered target gene, sensitivity, specificity, PPV, NPV and LR±; NRI over the burden + locus model and decision-curve analysis; joint fidelity (energy score versus independent Bernoulli draws). Comparators on identical splits: prevalence, burden + locus, L2 logistic regression. 95% CIs and paired differences by patient bootstrap. " },
+  { text: "Sample size (post hoc; EBAI asks a priori): ", options: { bold: true } }, { text: "~334 test patients give a 95% CI half-width of ≈ ±0.05 for a patient-level AUROC of 0.79 (Hanley–McNeil, 43% prevalence assumed)." }]);
 para(1, [{ text: "3.5 External replicate. ", options: { bold: true } },
   { text: "MSK-IMPACT 2017 (cBioPortal, ODbL): IMPACT341 → 69 IMPACT410-only genes in 1,215 NSCLC patients; 3 × 5-fold patient-level cross-validation, AUROC computed within folds." }]);
 
@@ -210,46 +214,59 @@ function bars(c, labels, values, colors, h) {
   cur[c] += h + 0.08;
 }
 bars(3, ["Amplifications (134 events)", "Mutations (646 events)", "Mutations, burden only", "Deep deletions (18 events)"],
-  [0.949, 0.728, 0.726, 0.711], [BLUE, BLUE, LIGHT_BLUE, BLUE], 2.25);
+  [0.949, 0.728, 0.726, 0.711], [BLUE, BLUE, LIGHT_BLUE, BLUE], 1.85);
 caption(3, "Figure 4.", "Replicate: per-gene AUROC by event type (positives-weighted mean; axis origin 0.50), pan-cancer logistic regression.");
 heading(3, "5  EBAI assessment");
 {
-  const rows = [
-    ["Ground truth", "met", "IMPACT505 NGS on the same sample"],
-    ["Discrimination", "met", "Pooled AUROC 0.77–0.79; per gene [ ]"],
-    ["Operating point", "partial", "Replicate: Se 0.90, NPV 0.86, LR− 0.22; cohort [ ]"],
-    ["Calibration", "partial", "Replicate: slope 0.97, O:E 1.08; cohort [ ]"],
-    ["Independent cohort", "open", "Single institution; non-MSK validation needed"],
-    ["Assay shift", "partial", "Real IMPACT341 input: AUROC 0.84 → 0.70"],
-    ["Fairness", "open", "Sex, ancestry, smoking, histology subgroups"],
-    ["Explainability", "met", "Signal = copy-number locus + mutational burden"],
+  const groups = [
+    ["Essential", [
+      ["Comparator", "met", "IMPACT505 NGS on the same sample"],
+      ["Discrimination", "met", "Pooled AUROC 0.77–0.79; per gene [ ]"],
+      ["Operating point", "partial", "Replicate: Se 0.90, NPV 0.86, LR− 0.22"],
+      ["Calibration", "partial", "Replicate: slope 0.97, O:E 1.08; plot [ ]"],
+      ["Indep. cohort", "open", "Single institution; external cohort needed"],
+      ["Assay variation", "partial", "Real IMPACT341 input: AUROC 0.84 → 0.70"]]],
+    ["Recommended", [
+      ["Fairness", "open", "Sex, ancestry, smoking, histology"],
+      ["Explainability", "met", "Ablation: CN locus + mutational burden"]]],
+    ["Additional", [
+      ["Cost", "partial", "Reuses routine panel data; cost analysis [ ]"],
+      ["Turnaround", "partial", "Inference in seconds; end-to-end time [ ]"]]],
+    ["Validation", [
+      ["Sample size", "partial", "Post hoc: ≈ ±0.05 AUROC with 334 test patients"],
+      ["NRI / DCA", "open", "Versus burden + locus model; triage threshold"]]],
+    ["Post-adoption", [
+      ["Monitoring", "open", "Drift with panel versions and populations"]]],
   ];
   const ST = { met: ["Met", BLUE, "FFFFFF", null], partial: ["Partial", PEACH, "7A2E0B", ORANGE], open: ["Not yet", "FFFFFF", "3F4B57", "6B7682"] };
-  const c1 = 2.2, c2 = 1.1, rh = 0.37, fsz = 13;
+  const g1 = 1.45, c1 = 1.85, c2 = 1.0, rh = 0.315, fsz = 12;
   let y = cur[3];
-  rect(colX(3), y, CW, 0.46, { fill: { color: INK } });
-  txt("EBAI class B · indirect measure of existing biomarkers · use: pre-screening", { x: colX(3) + 0.12, y, w: CW - 0.24, h: 0.46, fontSize: 13, bold: true, color: "FFFFFF", valign: "middle" });
-  y += 0.5;
-  for (const [req, st, ev] of rows) {
-    const [lab, fill, fg, ln] = ST[st];
-    txt(req, { x: colX(3), y, w: c1, h: rh, fontSize: fsz, valign: "middle", bold: true });
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: colX(3) + c1, y: y + 0.06, w: c2 - 0.12, h: rh - 0.12, rectRadius: 0.05,
-      fill: { color: fill }, line: ln ? { color: ln, width: 1 } : { color: fill, width: 0 } });
-    txt(lab, { x: colX(3) + c1, y: y + 0.06, w: c2 - 0.12, h: rh - 0.12, fontSize: 11.5, bold: true, color: fg, align: "center", valign: "middle" });
-    const runs = ev.split(/(\[ \])/).filter(Boolean).map((t) => ({ text: t, options: t === "[ ]" ? { color: PH } : {} }));
-    txt(runs, { x: colX(3) + c1 + c2, y, w: CW - c1 - c2, h: rh, fontSize: fsz, valign: "middle" });
-    y += rh; hline(colX(3), y, CW, "E0E4E8", 0.75);
+  rect(colX(3), y, CW, 0.44, { fill: { color: INK } });
+  txt("EBAI class B · indirect measure of existing biomarkers · use: enrichment", { x: colX(3) + 0.12, y, w: CW - 0.24, h: 0.44, fontSize: 12.5, bold: true, color: "FFFFFF", valign: "middle" });
+  y += 0.47;
+  for (const [g, rows] of groups) {
+    txt(g, { x: colX(3), y, w: g1, h: rh, fontSize: 11.5, bold: true, color: MUTED, valign: "middle" });
+    for (const [req, st, ev] of rows) {
+      const [lab, fill, fg, ln] = ST[st];
+      txt(req, { x: colX(3) + g1, y, w: c1, h: rh, fontSize: fsz, valign: "middle", bold: true });
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: colX(3) + g1 + c1, y: y + 0.045, w: c2 - 0.1, h: rh - 0.09, rectRadius: 0.04,
+        fill: { color: fill }, line: ln ? { color: ln, width: 1 } : { color: fill, width: 0 } });
+      txt(lab, { x: colX(3) + g1 + c1, y: y + 0.045, w: c2 - 0.1, h: rh - 0.09, fontSize: 10.5, bold: true, color: fg, align: "center", valign: "middle" });
+      const runs = ev.split(/(\[ \])/).filter(Boolean).map((t) => ({ text: t, options: t === "[ ]" ? { color: PH } : {} }));
+      txt(runs, { x: colX(3) + g1 + c1 + c2, y, w: CW - g1 - c1 - c2, h: rh, fontSize: fsz, valign: "middle" });
+      y += rh; hline(colX(3) + g1, y, CW - g1, "E0E4E8", 0.75);
+    }
+    hline(colX(3), y, CW, INK, 1);
   }
-  hline(colX(3), y, CW, INK, 1.5);
   cur[3] = y + 0.1;
 }
-caption(3, "Figure 5.", "Assessment against the ESMO EBAI class B requirements. Replicate values from MSK-IMPACT 2017; [ ] to be computed on MSK-CHORD. Se, sensitivity for ≥1 altered target gene.");
+caption(3, "Figure 5.", "Assessment along the seven EBAI dimensions and validation requirements for class B. Replicate values from MSK-IMPACT 2017; [ ] to compute on MSK-CHORD. CN, copy number; DCA, decision-curve analysis; NRI, net reclassification improvement.");
 heading(3, "6  Discussion");
 {
-  const items = ["A targeted panel carries predictive information on unassayed genes; per-gene AUROC and simple baselines, not pooled AUROC alone, measure how much.",
-    "The signal is mainly copy-number co-location and mutational burden; a generative model must add joint fidelity to justify its complexity.",
-    "Limitations: masked-panel evaluation is an upper bound; single institution and split; fairness and actionable genes not yet evaluated.",
-    "As an EBAI class B pre-screening tool, negatives still require confirmatory CGP (NPV 0.86 at 90% sensitivity)."];
+  const items = ["A targeted panel predicts part of the unassayed genome; per-gene AUROC and simple baselines, not pooled AUROC alone, show how much.",
+    "The signal is copy-number co-location and mutational burden; a generative model must add joint fidelity to justify its complexity.",
+    "EBAI class B: NPV 0.86 at 90% sensitivity does not support rule-out; use is enrichment, with confirmatory CGP.",
+    "Next: independent multi-centre validation, fairness audit, DCA and post-deployment drift monitoring."];
   const runs = items.map((t, i) => {
     const o = { bullet: true, paraSpaceAfter: 6 };
     if (i < items.length - 1) o.breakLine = true;
