@@ -39,7 +39,7 @@ const colX = (i) => M + i * (CW + GAP);
 const Y0 = TOP + headH + 0.4, FOOT_Y = H - 1.6;
 const cur = [Y0, Y0, Y0, Y0];
 const BODY_PT = Number(process.env.BPT || 15.5), CAP_PT = 13;
-const PAD = (process.env.PAD || "0.21,0,0.08,0.06").split(",").map(Number);
+const PAD = (process.env.PAD || "0.14,0,0.08,0.06").split(",").map(Number);
 // rough height estimate for wrapped Calibri text (in)
 const est = (str, pt, w) => {
   const perLine = Math.floor(w / (pt * 0.515 / 72));
@@ -87,7 +87,7 @@ cur[0] -= 0.18;
 {
   const rows = [["Patients, NSCLC, sequenced on IMPACT505", "2,226"], ["Input genes (IMPACT341)", "341"],
     ["Target genes (IMPACT505 \\ IMPACT341)", "164"], ["Altered target gene–patient pairs", "1.21%"],
-    ["Test-set patients", "≈334"], ["Split (patient level): train / val / test", "70 / 15 / 15%*"]];
+    ["Test-set patients", "≈334"], ["Patient-level split: train / validation / test", "70 / 15 / 15%*"]];
   const tbl = rows.map(([a, b]) => [{ text: a }, { text: b, options: { align: "right", color: b.includes("[") ? PH : INK } }]);
   const rowH = 0.42;
   s.addTable(tbl, { x: colX(0), y: cur[0], w: CW, colW: [CW * 0.62, CW * 0.38], fontFace: BODY, fontSize: 16, color: INK, rowH, margin: [0.04, 0, 0.04, 0],
@@ -97,7 +97,7 @@ cur[0] -= 0.18;
   cur[0] += rowH * rows.length + 0.3;
 }
 gap(0);
-caption(0, "*", "The abstract reports 75 / 15 / 15%, which sums to 105%; 70 / 15 / 15% is assumed here.");
+caption(0, "*", "Test (15%, ≈334 patients) and validation (15%) as in the abstract; the remaining 70% trains the model. The abstract\u2019s \u201c75%\u201d for training would sum to 105%.");
 para(0, lead("Alteration encoding.", "Target: one binary event per gene and patient (any non-synonymous mutation, including variants of unknown significance, amplification or deep deletion; fusions and other structural variants not modelled). Input: separate mutation, amplification and deletion indicators for the 341 assayed genes. One sample per patient. Genes not covered by a sample's panel are treated as missing, never as wild type."));
 
 // ---- column 2
